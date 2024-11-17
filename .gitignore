@@ -22,6 +22,7 @@
 *.tax2010
 *.vcf
 *.xml
+*.zip
 
 ### Images ###
 # JPEG
