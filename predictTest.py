@@ -8,6 +8,7 @@ import numpy as np
 from time import time
 from dataset.annotate import draw, get_dart_scores
 import pickle
+import dataset.distort as distort
 
 
 def bboxes_to_xy(bboxes, max_darts=3):
@@ -80,67 +81,88 @@ def predict(
     #data = get_splits(labels_path, dataset, split)  
     img_prefix = osp.join(cfg.data.path, 'cropped_images', str(cfg.model.input_size))
     img_paths = [osp.join(img_prefix, img_folder, name) for name in os.listdir(osp.join(img_prefix, img_folder))]
-
-    
-    """
-    xys = np.zeros((len(data), 7, 3))  # third column for visibility
-    data.xy = data.xy.apply(np.array)
-    for i, _xy in enumerate(data.xy):
-        xys[i, :_xy.shape[0], :2] = _xy
-        xys[i, :_xy.shape[0], 2] = 1
-    xys = xys.astype(np.float32)
-    """
-
     preds = np.zeros((len(img_paths), 4 + max_darts, 3))
-    ti = time()-0.0001
     print('Making predictions with {}...'.format(cfg.model.name))
-    
-    for i in range(len(img_paths)):
-        img = cv2.imread(img_paths[i])
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        if i%100 == 0:
-            print('Processing', i+1, 'of', len(img_paths))
+    allAblations = ["pure", "blurred5by5", "blurred3by3", "blurred7by7", "blurred_contrast", "higher_contrast150", "higher_contrast175"]
+    #ablations = ["higher_contrast125", "lower_contrast075"]
+    ablations = allAblations
 
-        bboxes = yolo.predict(img)
-        preds[i] = bboxes_to_xy(bboxes, max_darts)
+    # for each ablation do predictions and wirte the images to a different \dataset\ablation folder and store the results in a pickle file with its ablation name
+    for ablation in ablations:
+        #failedImages = []
+        for i in range(len(img_paths)):
+            img = cv2.imread(img_paths[i])
+            if i == 1:
+                ti = time()
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            if ablation == "blurred3by3":
+                imgCopy = img.copy()
+                transformimg = distort.low_pass_filter(imgCopy, kernel_size=3)
+                img = transformimg
+            elif ablation == "blurred5by5":
+                imgCopy = img.copy()
+                transformimg = distort.low_pass_filter(imgCopy, kernel_size=5)
+                img = transformimg
+            elif ablation == "blurred7by7":
+                imgCopy = img.copy()
+                transformimg = distort.low_pass_filter(imgCopy, kernel_size=7)
+                img = transformimg
+            elif ablation == "blurred_contrast":
+                imgCopy = img.copy()
+                transformimg = distort.change_contrast(imgCopy)
+                img = distort.low_pass_filter(transformimg)
+            elif ablation == "higher_contrast150":
+                imgCopy = img.copy()
+                transformimg = distort.change_contrast(imgCopy, 1.5)
+                img = transformimg
+            elif ablation == "higher_contrast175":
+                imgCopy = img.copy()
+                transformimg = distort.change_contrast(imgCopy, 1.75)
+                img = transformimg
+            if i%10 == 0:
+                print('Processing', i, 'of', len(img_paths))
 
-        if write:
-            print("writing: " + img_paths[i])
-            write_dir = osp.join('.\models', cfg.model.name, 'preds', split)
-            os.makedirs(write_dir, exist_ok=True)
-            xy = preds[i]
-            xy = xy[xy[:, -1] == 1]
-            annotated_img = draw(cv2.cvtColor(img.copy(), cv2.COLOR_RGB2BGR), xy[:, :2], cfg, circles=False, score=True)
-            print("writing to: " + osp.join(write_dir, os.path.basename(img_paths[i])))
-            cv2.imwrite(osp.join(write_dir, os.path.basename(img_paths[i])), annotated_img)
+            bboxes = yolo.predict(img)
+            preds[i] = bboxes_to_xy(bboxes, max_darts)
 
-    fps = len(img_paths) / (time() - ti)
-    print('FPS: {:.2f}'.format(fps))
+            if write:
+                write_dir = osp.join('.\models', cfg.model.name, 'preds', split)
+                #print("write dir: ", write_dir)
+                os.makedirs(write_dir, exist_ok=True)
+                xy = preds[i]
+                xy = xy[xy[:, -1] == 1]
 
-    """
-    ASE = []  # absolute score error
-    for pred, gt in zip(preds, xys):
-        ASE.append(abs(
-            sum(get_dart_scores(pred[:, :2], cfg, numeric=True)) -
-            sum(get_dart_scores(gt[:, :2], cfg, numeric=True))))
+                if not args.fail_cases:
+                    img = draw(cv2.cvtColor(img, cv2.COLOR_RGB2BGR), xy[:, :2], cfg, circles=False, score=True)
+                    print("writing to: " + osp.join(write_dir, "pink", ablation, os.path.basename(img_paths[i])))
+                    os.makedirs(osp.join(write_dir, "pink", ablation), exist_ok=True)
+                    cv2.imwrite(osp.join(write_dir, "pink", ablation, os.path.basename(img_paths[i])), img)
 
-    ASE = np.array(ASE)
-    PCS = len(ASE[ASE == 0]) / len(ASE) * 100
-    MASE = np.mean(ASE)
+        fps = (len(img_paths) - 1) / (time() - ti)
+        print('FPS: {:.2f}'.format(fps))
+"""
+        ASE = []  # absolute score error
+        for pred, gt in zip(preds, xys):
+            ASE.append(abs(
+                sum(get_dart_scores(pred[:, :2], cfg, numeric=True)) -
+                sum(get_dart_scores(gt[:, :2], cfg, numeric=True))))
 
-    print('Percent Correct Score (PCS): {:.1f}%'.format(PCS))
-    print('Mean Absolute Score Error (MASE): {:.2f}'.format(MASE))
+        ASE = np.array(ASE)
+        PCS = len(ASE[ASE == 0]) / len(ASE) * 100
+        MASE = np.mean(ASE)
 
-    """
+        results = {
+            'failed images': failedImages,
+            'fps': fps,
+            'ASE': ASE.tolist() if isinstance(ASE, np.ndarray) else ASE,  # Convert numpy array to list
+            'PCS': float(PCS),
+            'MASE': float(MASE)
+        }"""
 
-    results = {
-        'img_paths': img_paths,
-        'preds': preds,
-        'fps': fps,
-    }
+        # Save results as JSON
+        #with open(osp.join('./models', cfg.model.name, ablation + '_pink_results.txt'), 'w') as f:
+        #    json.dump(results, f)
 
-    pickle.dump(results, open(osp.join('./models', cfg.model.name, 'results.pkl'), 'wb'))
-    print('Saved results.')
 
 
 if __name__ == '__main__':

@@ -8,6 +8,8 @@ import numpy as np
 from time import time
 from dataset.annotate import draw, get_dart_scores
 import pickle
+import json
+import dataset.distort as distort
 
 
 def bboxes_to_xy(bboxes, max_darts=3):
@@ -60,7 +62,6 @@ def est_cal_pts(xy):
         print('Missed more than 1 calibration point')
     return xy
 
-
 def predict(
         yolo,
         cfg,
@@ -69,6 +70,8 @@ def predict(
         split='val',
         max_darts=3,
         write=False):
+    
+    print("failcases are: " + args.fail_cases.__str__())
 
     np.random.seed(0)
 
@@ -89,56 +92,122 @@ def predict(
 
     preds = np.zeros((len(img_paths), 4 + max_darts, 3))
     print('Making predictions with {}...'.format(cfg.model.name))
+    allAblations = ["pure", "blurred5by5", "blurred3by3", "blurred7by7", "blurred_contrast", "higher_contrast", "lower_contrast"]
+    #ablations = ["higher_contrast125", "lower_contrast075"]
+    ablations = ["warmth90", "warmth95", "warmth105", "warmth110"]
+    
 
-    for i, p in enumerate(img_paths):
-        if i == 1:
-            ti = time()
-        img = cv2.imread(p)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        if i%100 == 0:
-            print('Processing', i, 'of', len(img_paths))
+    # for each ablation do predictions and wirte the images to a different \dataset\ablation folder and store the results in a pickle file with its ablation name
+    for ablation in ablations:
+        failedImages = []
+        for i, p in enumerate(img_paths):
+            if i == 1:
+                ti = time()
+            img = cv2.imread(p)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            if ablation == "blurred3by3":
+                imgCopy = img.copy()
+                transformimg = distort.low_pass_filter(imgCopy, kernel_size=3)
+                img = transformimg
+            elif ablation == "blurred5by5":
+                imgCopy = img.copy()
+                transformimg = distort.low_pass_filter(imgCopy, kernel_size=5)
+                img = transformimg
+            elif ablation == "blurred7by7":
+                imgCopy = img.copy()
+                transformimg = distort.low_pass_filter(imgCopy, kernel_size=7)
+                img = transformimg
+            elif ablation == "blurred_contrast":
+                imgCopy = img.copy()
+                transformimg = distort.change_contrast(imgCopy)
+                img = distort.low_pass_filter(transformimg)
+            elif ablation == "higher_contrast125":
+                imgCopy = img.copy()
+                transformimg = distort.change_contrast(imgCopy, 1.25)
+                img = transformimg
+            elif ablation == "lower_contrast075":
+                imgCopy = img.copy()
+                transformimg = distort.change_contrast(imgCopy, 0.75)
+                img = transformimg
+            elif ablation == "warmth75":
+                imgCopy = img.copy()
+                transformimg = distort.change_color_warmth(imgCopy, 0.75)
+                img = transformimg
+            elif ablation == "warmth85":
+                imgCopy = img.copy()
+                transformimg = distort.change_color_warmth(imgCopy, 0.85)
+                img = transformimg
+            elif ablation == "warmth115":
+                imgCopy = img.copy()
+                transformimg = distort.change_color_warmth(imgCopy, 1.15)
+                img = transformimg
+            elif ablation == "warmth125":
+                imgCopy = img.copy()
+                transformimg = distort.change_color_warmth(imgCopy, 1.25)
+                img = transformimg
+            elif ablation == "warmth90":
+                imgCopy = img.copy()
+                transformimg = distort.change_color_warmth(imgCopy, 0.90)
+                img = transformimg
+            elif ablation == "warmth95":
+                imgCopy = img.copy()
+                transformimg = distort.change_color_warmth(imgCopy, 0.95)
+                img = transformimg
+            elif ablation == "warmth105":
+                imgCopy = img.copy()
+                transformimg = distort.change_color_warmth(imgCopy, 1.05)
+                img = transformimg
+            elif ablation == "warmth110":
+                imgCopy = img.copy()
+                transformimg = distort.change_color_warmth(imgCopy, 1.10)
+                img = transformimg
+            if i%10 == 0:
+                print('Processing ', ablation, ' nr: ', i, 'of', len(img_paths))
 
-        bboxes = yolo.predict(img)
-        preds[i] = bboxes_to_xy(bboxes, max_darts)
+            bboxes = yolo.predict(img)
+            preds[i] = bboxes_to_xy(bboxes, max_darts)
 
-        if write:
-            write_dir = osp.join('./models', cfg.model.name, 'preds', split, p.split('/')[-2])
-            os.makedirs(write_dir, exist_ok=True)
-            xy = preds[i]
-            xy = xy[xy[:, -1] == 1]
-            error = sum(get_dart_scores(preds[i, :, :2], cfg, numeric=True)) - sum(get_dart_scores(xys[i, :, :2], cfg, numeric=True))
-            if not args.fail_cases or (args.fail_cases and error != 0):
-                img = draw(cv2.cvtColor(img, cv2.COLOR_RGB2BGR), xy[:, :2], cfg, circles=False, score=True)
-                cv2.imwrite(osp.join(write_dir, p.split('/')[-1]), img)
+            if write:
+                write_dir = osp.join('./models', cfg.model.name, 'preds', split, ablation)
+                #print("write dir: ", write_dir)
+                os.makedirs(write_dir, exist_ok=True)
+                xy = preds[i]
+                xy = xy[xy[:, -1] == 1]
+                error = sum(get_dart_scores(preds[i, :, :2], cfg, numeric=True)) - sum(get_dart_scores(xys[i, :, :2], cfg, numeric=True))
+                if not args.fail_cases or (args.fail_cases and error != 0):
+                    img = draw(cv2.cvtColor(img, cv2.COLOR_RGB2BGR), xy[:, :2], cfg, circles=False, score=True)
+                    pathToimgdir = os.path.split(p)[0]
+                    imgName = os.path.split(p)[1]
+                    output_path = osp.join(write_dir, os.path.split(pathToimgdir)[1], imgName)
+                    os.makedirs(os.path.split(output_path)[0], exist_ok=True)
+                    cv2.imwrite(output_path, img)
+                    if error!= 0:
+                        failedImages.append(os.path.split(output_path)[1])
 
-    fps = (len(img_paths) - 1) / (time() - ti)
-    print('FPS: {:.2f}'.format(fps))
+        fps = (len(img_paths) - 1) / (time() - ti)
+        print('FPS: {:.2f}'.format(fps))
 
-    ASE = []  # absolute score error
-    for pred, gt in zip(preds, xys):
-        ASE.append(abs(
-            sum(get_dart_scores(pred[:, :2], cfg, numeric=True)) -
-            sum(get_dart_scores(gt[:, :2], cfg, numeric=True))))
+        ASE = []  # absolute score error
+        for pred, gt in zip(preds, xys):
+            ASE.append(abs(
+                sum(get_dart_scores(pred[:, :2], cfg, numeric=True)) -
+                sum(get_dart_scores(gt[:, :2], cfg, numeric=True))))
 
-    ASE = np.array(ASE)
-    PCS = len(ASE[ASE == 0]) / len(ASE) * 100
-    MASE = np.mean(ASE)
+        ASE = np.array(ASE)
+        PCS = len(ASE[ASE == 0]) / len(ASE) * 100
+        MASE = np.mean(ASE)
 
-    print('Percent Correct Score (PCS): {:.1f}%'.format(PCS))
-    print('Mean Absolute Score Error (MASE): {:.2f}'.format(MASE))
+        results = {
+            'failed images': failedImages,
+            'fps': fps,
+            'ASE': ASE.tolist() if isinstance(ASE, np.ndarray) else ASE,  # Convert numpy array to list
+            'PCS': float(PCS),
+            'MASE': float(MASE)
+        }
 
-    results = {
-        'img_paths': img_paths,
-        'preds': preds,
-        'gt': xys,
-        'fps': fps,
-        'ASE': ASE,
-        'PCS': PCS,
-        'MASE': MASE
-    }
-
-    pickle.dump(results, open(osp.join('./models', cfg.model.name, 'results.pkl'), 'wb'))
-    print('Saved results.')
+        # Save results as JSON
+        with open(osp.join('./models', cfg.model.name, ablation + '_results.txt'), 'w') as f:
+            json.dump(results, f)
 
 
 if __name__ == '__main__':

@@ -75,7 +75,7 @@ def batch_crop_images(input_dir, output_size=800, output_dir=None):
     os.makedirs(output_dir, exist_ok=True)
    
     for filename in os.listdir(input_dir):
-        if filename.endswith('.jpg') or filename.endswith('.png'):
+        if filename.endswith('.jpg') or filename.endswith('.png') or filename.endswith('.jpeg'):
             input_path = osp.join(input_dir, filename)
             crop_single_image(input_path, output_size, output_dir)
 

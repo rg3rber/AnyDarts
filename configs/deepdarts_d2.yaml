@@ -1,7 +1,7 @@
 data:
   path: 'dataset/'
   labels_path: 'dataset/labels.pkl'
-  dataset: 'd2-sample'  # either d1 or d2
+  dataset: 'd2'  # either d1 or d2
 
 board:
   r_board: 0.2255  # radius of full board

@@ -12,7 +12,9 @@ def crop(img_path, write_path, bbox, size=480, overwrite=False):
         print(write_path, 'already exists')
         return
 
-    os.makedirs(osp.join('/', *write_path.split('/')[:-1]), exist_ok=True)
+    #os.makedirs(osp.join('/', *write_path.split('/')[:-1]), exist_ok=True)
+    # Use os.makedirs with os.path.dirname to create parent directories
+    os.makedirs(osp.dirname(write_path), exist_ok=True)
     crop, _ = crop_board(img_path, bbox)
     if size != 'full':
         crop = cv2.resize(crop, (size, size))
@@ -34,14 +36,27 @@ if __name__ == '__main__':
         data = pd.read_pickle(args.labels_path)
 
         read_prefix = args.image_path
-        write_prefix = osp.join('/', *args.image_path.split('/')[:-1], 'cropped_images', str(size))
+        #write_prefix = osp.join('/', *args.image_path.split('/')[:-1], 'cropped_images', str(size))
+        # Use os.path.join for cross-platform path handling
+        write_prefix = osp.join(osp.dirname(args.image_path), 'cropped_images', str(size))
 
         print('Read path:', read_prefix)
         print('Write path:', write_prefix)
 
-        img_paths = [osp.join(read_prefix, folder, name) for (folder, name) in zip(data.img_folder, data.img_name)]
-        write_paths = [osp.join(write_prefix, folder, name) for (folder, name) in zip(data.img_folder, data.img_name)]
+        #img_paths = [osp.join(read_prefix, folder, name) for (folder, name) in zip(data.img_folder, data.img_name)]
+        #write_paths = [osp.join(write_prefix, folder, name) for (folder, name) in zip(data.img_folder, data.img_name)]
+
+        img_paths = [osp.join(read_prefix, name) for name in os.listdir(read_prefix)]
+        write_paths = [osp.join(write_prefix, name) for name in os.listdir(read_prefix)]
+
+        """
+        for ip in img_paths:
+            print("image path: " + ip)
+        for wp in write_paths:
+            print("write paths: " + wp)
+        """
         bboxes = data.bbox.values
+        
         sizes = [size for _ in range(len(bboxes))]
 
         p = mp.Pool(mp.cpu_count())
