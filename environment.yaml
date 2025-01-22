@@ -1,0 +1,17 @@
+name: holodarts
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12.8
+  - pip
+  - cudatoolkit
+  - cudnn
+  - ca-certificates
+  - openssl
+  - pip:
+      - opencv-python
+      - yacs==0.1.8
+      - pandas
+      - matplotlib
+prefix: C:\Users\rgerb\miniforge3\envs\deep-darts
