@@ -28,9 +28,8 @@ if __name__ == '__main__':
 
     model = YOLO("yolo11m-pose.yaml").load("yolo11m-pose.pt")
 
-    
 
-    transform = A.compose(deepdartsAugmentations, p=cfg.aug.overall_prob)
+    #transform = A.compose(deepdartsAugmentations, p=cfg.aug.overall_prob)
 
     results = model.train(data=cfg,
                         epochs=cfg.train.epochs,
@@ -44,7 +43,7 @@ if __name__ == '__main__':
                         cos_lr=cfg.train.cos_lr,
                         plots=cfg.train.plots,
                         augment=False,
-                        transforms=deepdartsAugmentations
+                        transforms=albumentations_transform
                         )
     
     """ results = model.train(
@@ -65,6 +64,8 @@ if __name__ == '__main__':
     mosaic=1.0,   # image mosaic (probability)
     mixup=0.0,    # image mixup (probability)
     ) 
+
+    from claude:
     albumentations:
   horizontal_flip: 0.5
   vertical_flip: 0.0
@@ -79,4 +80,13 @@ if __name__ == '__main__':
     contrast: 0.2
     saturation: 0.2
     hue: 0.1
-    p: 0.5"""
+    p: 0.5
+    
+    or like this from github forum: https://github.com/ultralytics/ultralytics/issues/14042
+    train:
+  augmentations:
+    - type: albumentations
+      transforms:
+        - RandomCrop: {height: 512, width: 512}
+        - HorizontalFlip: {p: 0.5}
+        - RandomBrightnessContrast: {p: 0.2}"""
