@@ -44,5 +44,22 @@ Dataset 2:\
 
 # Notes
 
-Latest image: 791 in d3_26_12_2024_random
+Latest image id: 780 (791 in d3_26_12_2024_random)
 
+## Dataset
+
+### train: 891 imgs
+- D1: 98 
+- D2: 150 
+- D3: 643
+
+  ### val: 144 imgs
+  - D1: 15
+  - D2: 23
+  - D3: 106
+ 
+### test: 67 imgs
+- D1: 12
+- D2: 24
+- D3: 31
+  
