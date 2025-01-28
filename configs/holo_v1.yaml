@@ -24,7 +24,7 @@ board:
 
 train: #define hyperparams
   seed: 0
-  epochs: 10
+  epochs: 1
   batch_size: 4  # per gpu
   lr0: 0.001 #initial learning rate
   # lrf: 0.01 # final learning rate

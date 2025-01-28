@@ -5,48 +5,50 @@ import argparse
 from yacs.config import CfgNode
 import os.path as osp
 
-# maybe not even needed
-def albumentations_transform(image, *args, **kwargs):
-    deepdartsAugmentations = A.Compose([
-    A.HorizontalFlip(p=0.5),
-    A.RandomRotate90(p=0.5),
-    A.Affine(shear={"x": (-30, 30), "y": (-30, 30)}, p=0.5),  # Warping with shear
-    A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.5),  # Jitter
-    ])
-    transformed = deepdartsAugmentations(image=image)
-    return transformed['image']
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--cfg', default='holo_v1')
+    parser.add_argument('-t', '--times', default=4) # total number of images as multiple of original
     args = parser.parse_args()
 
     cfg = CfgNode(new_allowed=True)
     cfg.merge_from_file(osp.join('configs', args.cfg + '.yaml'))
     cfg.model.name = args.cfg
 
-    model = YOLO("yolo11m-pose.yaml").load("yolo11m-pose.pt")
-
-
-    #transform = A.compose(deepdartsAugmentations, p=cfg.aug.overall_prob)
-
+    model = YOLO("yolo11s.yaml").load("yolo11s.pt")
+  
     results = model.train(data=cfg,
-                        epochs=cfg.train.epochs,
-                        batch=cfg.train.batch_size,
-                        imgsz=cfg.model.input_size,
-                        device='mps',
-                        project=cfg.train.name,
-                        optimizer=cfg.train.optimizer,
-                        seed=cfg.train.seed,
-                        close_mosaic=cfg.train.mosaic,
-                        cos_lr=cfg.train.cos_lr,
-                        plots=cfg.train.plots,
-                        augment=False,
-                        transforms=albumentations_transform
-                        )
+                          epochs=cfg.train.epochs,
+                          batch=cfg.train.batch_size,
+                          imgsz=cfg.model.input_size,
+                          project='first_run',
+                          device='mps',
+                          optimizer=cfg.train.optimizer,
+                          seed=cfg.train.seed,
+                          mosaic=cfg.train.close_mosaic,
+                          cos_lr=cfg.train.cos_lr,
+                          plots=cfg.train.plots,
+                          )
     
-    """ results = model.train(
+      
+    """results = model.train(data=cfg,
+                          augment=False,  # Disable augmentations
+                          hsv_h=0,  # Disable HSV color augmentations
+                          hsv_s=0,
+                          hsv_v=0,
+                          degrees=0,  # Disable rotation
+                          translate=0,  # Disable translation
+                          scale=0,  # Disable scaling
+                          shear=0,  # Disable shearing
+                          perspective=0,  # Disable perspective transform
+                          flipud=0,  # Disable vertical flip
+                          fliplr=0,  # Disable horizontal flip
+                          mosaic=0,  # Disable mosaic augmentation
+                          mixup=0,  # Disable mixup augmentation
+                          copy_paste=0  # Disable copy-paste augmentation
+                      ) """
+    
+    """results = model.train(
     data=cfg,
     # ... other parameters ...
     augment=True,  # Enables default augmentations
