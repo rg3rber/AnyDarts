@@ -11,13 +11,16 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--times', default=4) # total number of images as multiple of original
     args = parser.parse_args()
 
+    data_path = osp.join('dataset', args.cfg, 'data.yaml')
+    cfg_path = osp.join('configs', args.cfg + '.yaml')
+
     cfg = CfgNode(new_allowed=True)
-    cfg.merge_from_file(osp.join('configs', args.cfg + '.yaml'))
+    cfg.merge_from_file(cfg_path)
     cfg.model.name = args.cfg
 
     model = YOLO("yolo11s.yaml").load("yolo11s.pt")
   
-    results = model.train(data=cfg,
+    results = model.train(data=data_path,
                           epochs=cfg.train.epochs,
                           batch=cfg.train.batch_size,
                           imgsz=cfg.model.input_size,

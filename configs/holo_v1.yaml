@@ -11,8 +11,8 @@ names:
   0: cal1
   1: cal2
   2: cal3
-  4: cal4
-  5: dart
+  3: cal4
+  4: dart
 
 board:
   r_board: 0.2255  # radius of full board
@@ -32,8 +32,8 @@ train: #define hyperparams
   optimizer: 'Adam'
   name: 'v1'
   close_mosaic: 0
-  cos_lr: 'False'
-  plots: 'True'
+  cos_lr: False
+  plots: True
   # profile: True enables profiling of ONNX speeds to opimize model deployment
   # freeze: N, first N layers frozen (for finetuning)
   # loss_type: 'ciou'
