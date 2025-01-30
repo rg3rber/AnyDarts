@@ -243,8 +243,6 @@ $RECYCLE.BIN/
 wandb/
 runs/detect/
 test/
+
+# exclude dataset
 dataset/
-
-# exclude full size images
-
-dataset/images/
