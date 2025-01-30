@@ -1,18 +1,7 @@
-# Custom HoloDarts dataset
+# Custom HoloDarts config
 # using YOLO11m pretrained model
 # data format: YOLOv11 PyTorch TXT
-path: ../dataset/holo_v1
-train: train/images
-val: val/images
-test: test/images
-
-#Classes: 5
-names:
-  0: cal1
-  1: cal2
-  2: cal3
-  3: cal4
-  4: dart
+data: ../dataset/holo_v1/data.yaml # path to data.yaml
 
 board:
   r_board: 0.2255  # radius of full board
@@ -24,8 +13,8 @@ board:
 
 train: #define hyperparams
   seed: 0
-  epochs: 1
-  batch_size: 4  # per gpu
+  epochs: 50
+  batch_size: 8  # per gpu
   lr0: 0.001 #initial learning rate
   # lrf: 0.01 # final learning rate
   bbox_size: 0.025  # fraction of input size
@@ -44,7 +33,8 @@ train: #define hyperparams
 
 model:
   input_size: 800
-  weights_path: 'models/holo_v1/weights'
+  name: 'models/holo_v1/best.pt'
+  max_darts: 3
 
 #deep-darts leftovers
 # aug:

@@ -10,7 +10,6 @@
 *.fatbin
 
 ### Data ###
-*.csv
 *.dat
 *.efx
 *.gbr
