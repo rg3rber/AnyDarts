@@ -286,4 +286,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Logging runs
+wandb/
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,python,cuda,data,images
