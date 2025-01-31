@@ -1,10 +1,41 @@
-# Custom HoloDarts dataset
-# using YOLO11m pretrained model
-# data format: YOLOv11 PyTorch TXT
-path: ../dataset/holo_v1
+# Global HoloDarts Config
+
+datapath: ../dataset/holo_v1
 train: train/images
 val: val/images
 test: test/images
+data: ../dataset/holo_v1/data.yaml
+cfg: ../training/train_cfg.yaml
+
+model:
+  name: holo_v1
+  input_size: 800
+  weights: ../training/yolo11s.pt
+  max_darts: 3
+  bbox_size: 0.025  # fraction of input size
+
+# used to convert dart angle to board number
+BOARD_DICT:
+  0: '13'
+  1: '4'
+  2: '18'
+  3: '1'
+  4: '20'
+  5: '5'
+  6: '12'
+  7: '9'
+  8: '14'
+  9: '11'
+  10: '8'
+  11: '16'
+  12: '7'
+  13: '19'
+  14: '3'
+  15: '17'
+  16: '2'
+  17: '15'
+  18: '10'
+  19: '6'
 
 #Classes: 5
 names:
@@ -21,71 +52,3 @@ board:
   r_outer_bull: 0.0159
   r_inner_bull: 0.00635
   w_double_treble: 0.01  # wire apex to apex for double and treble
-
-train: #define hyperparams
-  seed: 0
-  epochs: 1
-  batch_size: 4  # per gpu
-  lr0: 0.001 #initial learning rate
-  # lrf: 0.01 # final learning rate
-  bbox_size: 0.025  # fraction of input size
-  optimizer: 'Adam'
-  name: 'v1'
-  close_mosaic: 0
-  cos_lr: False
-  plots: True
-  # profile: True enables profiling of ONNX speeds to opimize model deployment
-  # freeze: N, first N layers frozen (for finetuning)
-  # loss_type: 'ciou'
-  # loss_verbose: 0
-  # verbose: 1
-  # # save_weights_type: 'tf'
-  # val: true
-
-model:
-  input_size: 800
-  weights_path: 'models/holo_v1/weights'
-
-#deep-darts leftovers
-# aug:
-#   overall_prob: 0.8
-#   flip_lr_prob: 0.5
-#   flip_ud_prob: 0.5
-#   rot_prob: 0.5
-#   rot_step: 36  # degrees
-#   rot_small_prob: 0.5
-#   rot_small_max: 2  # degrees
-#   jitter_prob: 0.5
-#   jitter_max: 0.02  # fraction of input size
-#   cutout_prob: 0
-#   warp_prob: 0.5
-#   warp_rho: 2
-
-# model:
-#   tiny: true
-#   input_size: 800
-#   weights_path: 'models/deepdarts_d1/weights'
-#   weights_type: 'tf'
-#   weights_layers: [
-#       'yolo_conv2d',
-#       'yolo_conv2d_1',
-#       'yolo_conv2d_2',
-#       'yolo_conv2d_3',
-#       'yolo_conv2d_4',
-#       'yolo_conv2d_5',
-#       'yolo_conv2d_6',
-#       'yolo_conv2d_7',
-#       'yolo_conv2d_8',
-#       'yolo_conv2d_9',
-#       'yolo_conv2d_10',
-#       'yolo_conv2d_11',
-#       'yolo_conv2d_12',
-#       'yolo_conv2d_13',
-#       'yolo_conv2d_14',
-#       'yolo_conv2d_15',
-#       'yolo_conv2d_16',
-#       'yolo_conv2d_17',
-#       'yolo_conv2d_18',
-#       'yolo_conv2d_19',
-#     #      'yolo_conv2d_20', last layer not transferred from deepdarts_d1 for effective training
-#   ]
