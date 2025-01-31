@@ -1,8 +1,10 @@
 # First Train: 
 
-On holo_v1 dataset using 50 epochs
+- On holo_v1 dataset
+- 50 epochs
+- YOLO default config
 
-70% PCS on test set
+=> 70% PCS on test set
 
 # Validation losses:
 
