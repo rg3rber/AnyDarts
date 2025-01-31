@@ -9,7 +9,7 @@ data: # (str, optional) path to data file, i.e. coco8.yaml
 epochs: 50 # (int) number of epochs to train for
 time: # (float, optional) number of hours to train for, overrides epochs if supplied
 patience: 25 # (int) epochs to wait for no observable improvement for early stopping of training
-batch: -1 # (int) number of images per batch (-1 for AutoBatch)
+batch: 12 # (int) number of images per batch (-1 for AutoBatch)
 imgsz: 800 # (int | list) input images size as int for train and val modes, or list[h,w] for predict and export modes
 save: True # (bool) save train checkpoints and predict results
 save_period: -1 # (int) Save checkpoint every x epochs (disabled if < 1)
@@ -20,7 +20,7 @@ project: # (str, optional) project name
 name: # (str, optional) experiment name, results saved to 'project/name' directory
 exist_ok: False # (bool) whether to overwrite existing experiment
 pretrained: True # (bool | str) whether to use a pretrained model (bool) or a model to load weights from (str)
-optimizer: auto # (str) optimizer to use, choices=[SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto]
+optimizer: Adam # (str) optimizer to use, choices=[SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto]
 verbose: True # (bool) whether to print verbose output
 seed: 0 # (int) random seed for reproducibility
 deterministic: True # (bool) whether to enable deterministic mode
@@ -105,7 +105,7 @@ hsv_v: 0.4 # (float) image HSV-Value augmentation (fraction)
 degrees: 2.0 # (float) image rotation (+/- deg)
 translate: 0.02 # (float) image translation (+/- fraction)
 scale: 0.0 # (float) image scale (+/- gain)
-shear: 2.0 # (float) image shear (+/- deg)
+shear: 1.0 # (float) image shear (+/- deg)
 perspective: 0.001 # (float) image perspective (+/- fraction), range 0-0.001
 flipud: 0.2 # (float) image flip up-down (probability)
 fliplr: 0.2 # (float) image flip left-right (probability)
