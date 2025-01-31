@@ -14,6 +14,22 @@ model:
   max_darts: 3
   bbox_size: 0.025  # fraction of input size
 
+board:
+  r_board: 0.2255  # radius of full board
+  r_double: 0.170  # center bull to outside double wire edge, in m (BDO standard)
+  r_treble: 0.1074  # center bull to outside treble wire edge, in m (BDO standard)
+  r_outer_bull: 0.0159
+  r_inner_bull: 0.00635
+  w_double_treble: 0.01  # wire apex to apex for double and treble
+
+#Classes: 5
+names:
+  0: cal1
+  1: cal2
+  2: cal3
+  3: cal4
+  4: dart
+
 # used to convert dart angle to board number
 BOARD_DICT:
   0: '13'
@@ -37,18 +53,4 @@ BOARD_DICT:
   18: '10'
   19: '6'
 
-#Classes: 5
-names:
-  0: cal1
-  1: cal2
-  2: cal3
-  3: cal4
-  4: dart
 
-board:
-  r_board: 0.2255  # radius of full board
-  r_double: 0.170  # center bull to outside double wire edge, in m (BDO standard)
-  r_treble: 0.1074  # center bull to outside treble wire edge, in m (BDO standard)
-  r_outer_bull: 0.0159
-  r_inner_bull: 0.00635
-  w_double_treble: 0.01  # wire apex to apex for double and treble
