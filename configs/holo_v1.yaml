@@ -1,12 +1,5 @@
 # Global HoloDarts Config
 
-datapath: ../dataset/holo_v1
-train: train/images
-val: val/images
-test: test/images
-data: ../dataset/holo_v1/data.yaml
-cfg: ../training/train_cfg.yaml
-
 model:
   name: holo_v1
   input_size: 800
