@@ -242,7 +242,7 @@ $RECYCLE.BIN/
 # exclude runs and tests
 wandb/
 runs/detect/
-test/
+testing/predictions/
 
 # exclude dataset
 
