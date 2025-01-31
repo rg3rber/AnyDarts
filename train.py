@@ -19,8 +19,10 @@ if __name__ == '__main__':
     cfg.model.name = args.cfg
 
     model = YOLO("yolo11s.yaml").load("yolo11s.pt")
+
+    results = model.train(data=data_path, cfg="default.yaml")
   
-    results = model.train(data=data_path,
+    """ results = model.train(data=data_path,
                           epochs=cfg.train.epochs,
                           batch=cfg.train.batch_size,
                           imgsz=cfg.model.input_size,
@@ -31,7 +33,7 @@ if __name__ == '__main__':
                           mosaic=cfg.train.close_mosaic,
                           cos_lr=cfg.train.cos_lr,
                           plots=cfg.train.plots,
-                          )
+                          ) """
     
       
     """results = model.train(data=cfg,

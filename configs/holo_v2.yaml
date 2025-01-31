@@ -5,7 +5,6 @@ path: ../dataset/holo_v1
 train: train/images
 val: val/images
 test: test/images
-cfg: ../train_cfg.yaml
 
 #Classes: 5
 names:
