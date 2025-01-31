@@ -3,12 +3,6 @@ import os
 import cv2
 import numpy as np
 
-# used to convert dart angle to board number
-BOARD_DICT = {
-    0: '13', 1: '4', 2: '18', 3: '1', 4: '20', 5: '5', 6: '12', 7: '9', 8: '14', 9: '11',
-    10: '8', 11: '16', 12: '7', 13: '19', 14: '3', 15: '17', 16: '2', 17: '15', 18: '10', 19: '6'
-}
-
 """ converts array of bounding boxes [x_center, y_center, width, height, class] to xy [x, y, visible]
  with index = class label"""
 def bboxes_to_xy(bboxes, max_darts=3):
