@@ -156,7 +156,8 @@ def get_dart_scores(xy, cfg, numeric=False):
         elif dist <= r_ob:
             scores.append('B')
         else:
-            number = BOARD_DICT[int(angle / 18)]
+            board_dict = cfg.BOARD_DICT
+            number = board_dict[int(angle / 18)]
             if dist <= r_d and dist > r_d - w_dt:
                 scores.append('D' + number)
             elif dist <= r_t and dist > r_t - w_dt:
