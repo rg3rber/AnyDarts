@@ -43,7 +43,8 @@ def score(img, cfgFile="holodarts", debug=False):
     cfg = CfgNode(new_allowed=True)
     cfg.merge_from_file(osp.join('configs', cfgFile + '.yaml'))
 
-    model = YOLO(cfg.model.name)
+    #TODO: once model is working and path is inside config: model = YOLO(cfg.model.name)
+    model = YOLO('models/holo_train2/weights/best.pt')
 
     boardbbox = find_board(img)
     if boardbbox is None:
