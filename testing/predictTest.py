@@ -12,7 +12,7 @@ import pandas as pd
 
 """ run inference on set of images"""
 
-def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False):
+def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False, log_dir='testing'):
     if osp.isdir(path):
         images = os.listdir(path)
         img_paths = [osp.join(path, name) for name in images]
@@ -120,9 +120,9 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False)
         print(f'Percent Correct Score (PCS): {PCS:.1f}%')
         print(f'Mean Absolute Score Error (MASE): {MASE:.2f}')
 
-    stats.to_csv(osp.join(write_dir, 'test_results.csv'), index=False)
+    stats.to_csv(osp.join(log_dir, 'test_results.csv'), index=False)
 
-    with open(osp.join(write_dir, 'test_results.csv'), 'a') as f:
+    with open(osp.join(log_dir, 'test_results.csv'), 'a') as f:
         f.write(f"# FPS: {fps:.2f}\n")
         if test:
             f.write(f"# PCS: {PCS:.2f}%\n")
@@ -131,20 +131,29 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='holo_v1')
-    parser.add_argument('-pt', '--bestpt', default='first_run/train/weights/best.pt')
-    
+    parser.add_argument('-c', '--cfg', default='holo_v1') # dataset config
+    parser.add_argument('-pt', '--bestpt', default='run2/train2/weights/best.pt') # best weights
+    parser.add_argument('-p', '--project', default='run2') # training config
+    parser.add_argument('-e', '--experiment', default='train2') # experiment name
+
+    args = parser.parse_args()
+
     # if arguments not provided prompt user to provide them
-    img_folder = input("Enter the folder path to the images: ")
+    img_folder = input("Enter the folder path to the images: \n")
     if not osp.exists(img_folder) or img_folder == '':
         print("Invalid folder path using default: dataset/holo_v1/test/images")
         img_folder = 'dataset/holo_v1/test/images'
+
+    project = args.project
+    project_name = input(f"Enter project name (default: {project}): ") or project
+    experiment = args.experiment
+    experiment_name = input(f"Enter experiment name (default: {experiment}): ") or experiment
 
     test = input("Do the images have corresponding labels? (y/n): ").lower() == 'y'
     write = input("Do you want to write predicted images? (y/n): ").lower() == 'y'
     fail_cases = input("Do you want to write failed cases? (y/n): ").lower() == 'y'
     
-    args = parser.parse_args()
+    log_dir = osp.join(project_name, experiment_name)
     
     # Load model and config
     model = YOLO(args.bestpt)
@@ -154,4 +163,4 @@ if __name__ == '__main__':
     cfg.model.name = args.cfg
     
     # Run inference
-    batch_inference(model, img_folder, cfg, test, write, fail_cases)
+    batch_inference(model, img_folder, cfg, test, write, fail_cases, log_dir)
