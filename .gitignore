@@ -244,6 +244,7 @@ wandb/
 runs/detect/
 testing/test_predictions/**/*.jpg
 uploads/
+models/
 
 # exclude dataset
 
