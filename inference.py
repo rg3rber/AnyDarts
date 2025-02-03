@@ -14,18 +14,10 @@ def inference(model, img_board, cfg):
     """
     if isinstance(img_board, str) and osp.isfile(img_board):
         img = cv2.imread(img_board)
-        cv2.imshow("Inference using path before: ", img)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        cv2.imshow("Inference using path after: ", img)
-        cv2.waitKey()
-        cv2.destroyAllWindows()
-    else:
-        cv2.imshow("Inference using loaded image before: ", img_board)
-        img = cv2.cvtColor(img_board, cv2.COLOR_BGR2RGB)
-        cv2.imshow("Inference using loaded image after: ", img)
-        cv2.waitKey()
-        cv2.destroyAllWindows()
-    
+        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) for reasons unclear up to now prediction works with image directly loaded from cv2
+    #else:
+        #img = cv2.cvtColor(img_board, cv2.COLOR_BGR2RGB)
+
     results = model(img, max_det=4+cfg.model.max_darts)
     results[0].show()
     

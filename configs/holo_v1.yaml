@@ -10,7 +10,8 @@ cfg: ../training/train_cfg.yaml
 model:
   name: holo_v1
   input_size: 800
-  weights: ../training/yolo11s.pt
+  weights: ../run2/train2/weights/best.pt
+  training_weights: ../training/yolo11s.pt
   max_darts: 3
   bbox_size: 0.025  # fraction of input size
 

@@ -24,7 +24,7 @@ def crop(img, boardbbox, cfg):
     crop = cv2.resize(crop, (size, size))
     return crop
 
-def get_dart_scores(img, cfgFile="holodarts", debug=False):
+def score(img, cfgFile="holodarts", debug=False):
     """
     img: original image or path to image to run inference on
     returns: scores of the darts in the image
@@ -83,9 +83,9 @@ if __name__ == '__main__':
         exit(1)
 
     print("Scoring image as path: " , img, " with config: " + args.cfg)
-    score_imgAsPath = get_dart_scores(img, args.cfg, True)
+    score_imgAsPath = score(img, args.cfg, True)
     print("Scoring preloaded image: " , img, " with config: " + args.cfg)
-    #score_imgLoaded = get_dart_scores(preloaded_img, args.cfg, True)
+    #score_imgLoaded = score(preloaded_img, args.cfg, True)
 
     print(f"Score from image as path: {score_imgAsPath}")
     #print(f"Score from image loaded: {score_imgLoaded}")

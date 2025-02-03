@@ -243,6 +243,7 @@ $RECYCLE.BIN/
 wandb/
 runs/detect/
 testing/predictions/
+testing/test_predictions/**/*.jpg
 
 # exclude dataset
 
