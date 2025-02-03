@@ -15,18 +15,18 @@ def inference(model, img_board, cfg):
     if isinstance(img_board, str) and osp.isfile(img_board):
         img = cv2.imread(img_board)
         # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) for reasons unclear up to now prediction works with image directly loaded from cv2
-    #else:
+    else:
         #img = cv2.cvtColor(img_board, cv2.COLOR_BGR2RGB)
+        img = img_board
 
     results = model(img, max_det=4+cfg.model.max_darts)
-    results[0].show()
-    
-    boxes = results[0].boxes
 
+    boxes = results[0].boxes
     xywh = boxes.xywh.numpy()
     classes = boxes.cls.numpy()
     bboxes = np.concatenate((xywh, classes[:, None]), axis=1)
     xy, _ = bboxes_to_xy(bboxes, cfg.model.max_darts)
+    
     scores = get_dart_scores(xy, cfg, True)
     score = np.sum(scores)
 

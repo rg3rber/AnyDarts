@@ -37,7 +37,7 @@ def score(img, cfgFile="holodarts", debug=False):
         return -1
     
     if debug:
-        cv2.imshow("original", img)
+        cv2.imshow("score debug: original", img)
         cv2.waitKey()
 
     cfg = CfgNode(new_allowed=True)
@@ -52,7 +52,7 @@ def score(img, cfgFile="holodarts", debug=False):
     
     board = crop(img, boardbbox, cfg)
     if debug: 
-        cv2.imshow("board", board)
+        cv2.imshow("score debug board:", board)
         cv2.waitKey()
         cv2.destroyAllWindows()
 
