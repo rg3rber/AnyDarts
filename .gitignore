@@ -247,5 +247,7 @@ testing/test_predictions/**/*.jpg
 uploads/
 
 # exclude dataset
-
 dataset/
+
+# exclude working models
+models/
