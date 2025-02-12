@@ -18,14 +18,11 @@ if __name__ == '__main__':
     cfg.merge_from_file(cfg_path)
     cfg.model.name = args.cfg
 
-    """ Change these lines per ablation in addition to the train config (and global config) """
 
     model = YOLO("yolo11s.yaml").load(cfg.model.weights)
-    project_name = "run2"
-    experiment_name = "train2"
+    project_name = "run-gray"
+    experiment_name = "train"
     overwrite_run = False
-    train_cfg = osp.join('training', project_name + '_' + experiment_name + '_cfg.yaml')
+    train_cfg = osp.join('training', 'cfg.yaml')
 
-    """ --------------------------------------------------------------------------------- """
-
-    results = model.train(data=data_path, cfg=train_cfg, project=project_name, name=experiment_name, exist_ok=overwrite_run)
+    results = model.train(data=data_path, cfg=train_cfg, exist_ok=overwrite_run)
