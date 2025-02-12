@@ -249,3 +249,12 @@ models/
 # exclude dataset
 
 dataset/
+
+# exclude working models
+models/
+
+# exclude ds store
+.DS_Store
+
+# exclude screenshot
+CleanShot*

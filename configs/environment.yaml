@@ -3,7 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.12.8
+  - python=3.12
   - pip
   - ca-certificates
   - openssl
@@ -12,7 +12,6 @@ dependencies:
       - wandb
       - albumentations
       - opencv-python
-      - yacs==0.1.8
+      - yacs
       - pandas
       - matplotlib
-#prefix: C:\Users\rgerb\miniforge3\envs\deep-darts
