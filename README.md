@@ -46,7 +46,7 @@ Dataset 2:\
 
 Latest image id: 1055 (791 in d3_26_12_2024_random)
 
-## Dataset
+## Dataset holo_v1
 
 ### train: 891 imgs
 - D1: 98 
@@ -62,4 +62,10 @@ Latest image id: 1055 (791 in d3_26_12_2024_random)
 - D1: 12
 - D2: 24
 - D3: 31
+
+## holo_v2:
+
+train: additional 203 => 1094 imgs
+
+val: additional 70 => 214
   
