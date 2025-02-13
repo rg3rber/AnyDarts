@@ -20,9 +20,9 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
         img_paths = [path]
 
     if test:
-        write_dir = osp.join('testing/test_predictions', cfg.model.name)
+        write_dir = osp.join('testing/test_predictions', log_dir, cfg.model.name)
     else:
-        write_dir = osp.join('testing/custom_predictions', cfg.model.name)
+        write_dir = osp.join('testing/custom_predictions', log_dir, cfg.model.name)
     
     print(f'Making predictions with {cfg.model.name}...')
     
