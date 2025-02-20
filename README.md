@@ -68,4 +68,19 @@ Latest image id: 1055 (791 in d3_26_12_2024_random)
 train: additional 203 => 1094 imgs
 
 val: additional 70 => 214
+
+test: 
+   1. full game: 119
+   2. full game 3 darts only: 19
+   3. front facing 3 darts hard: 28
+   4. taken on samsung: 21
+   5. zoomed: 15
+   6. different darts: 46
+   7. easy one dart: 43 (each field once)
+   8. testing occlusions + angles: 30
+   9. occlusion only: 21
+   10. precision test: 20 (right on section borders)
+   11. test rim: 15 (took away black tape covering board ads)
+
+=> totals: 377
   
