@@ -242,7 +242,19 @@ $RECYCLE.BIN/
 # exclude runs and tests
 wandb/
 runs/detect/
-test/
+testing/test_predictions/**/*.jpg
+uploads/
+models/
 
 # exclude dataset
+
 dataset/
+
+# exclude working models
+models/
+
+# exclude ds store
+.DS_Store
+
+# exclude screenshot
+CleanShot*
