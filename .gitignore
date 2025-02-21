@@ -246,8 +246,12 @@ testing/predictions/
 testing/test_predictions/**/*.jpg
 uploads/
 
-# exclude dataset
-dataset/
+# exclude datasets but include labels
+dataset/holo_v1/
+dataset/holo_v2/
+dataset/cropped_images/
+dataset/images/
+dataset/annotations/labels
 
 # exclude working models
 models/
