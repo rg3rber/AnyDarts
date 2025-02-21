@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import os.path as osp
 from typing import List, Tuple
 import argparse
 from yacs.config import CfgNode
@@ -63,8 +64,8 @@ def convert_annotations(pkl_path: str, output_dir: str, bbox_size: float) -> Non
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-lp', '--labels-path', default='labels.pkl')
-    parser.add_argument('-o', '--output-path', default='images/labels')
+    parser.add_argument('-lp', '--labels-path', default='dataset/labels.pkl')
+    parser.add_argument('-o', '--output-path', default='dataset/annotations/labels')
     parser.add_argument('-c', '--config', default='configs/holo_v2.yaml')
 
     args = parser.parse_args()
@@ -72,5 +73,7 @@ if __name__ == "__main__":
     cfg = CfgNode(new_allowed=True)
     cfg.merge_from_file(args.config)
 
-    convert_annotations(args.labels_path, args.output_path, cfg.model.bbox_size)
+    output_dir = osp.join(args.output_path, osp.basename(osp.splitext(args.labels_path)[0]))
+
+    convert_annotations(args.labels_path, output_dir, cfg.model.bbox_size)
     print(f"Conversion completed. Label files saved in {args.output_path}")
