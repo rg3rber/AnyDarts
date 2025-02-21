@@ -12,7 +12,7 @@ import pandas as pd
 
 """ run inference on set of images"""
 
-def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False, log_dir='testing'):
+def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False, log_dir='testing', test_img_folder='test'):
     if osp.isdir(path):
         images = os.listdir(path)
         img_paths = [osp.join(path, name) for name in images]
@@ -21,9 +21,9 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
         img_paths = [path]
 
     if test:
-        write_dir = osp.join('../test/predictions', cfg.model.name)
+        write_dir = osp.join('testing/test_predictions', log_dir, cfg.model.name, test_img_folder)
     else:
-        write_dir = osp.join('../custom_predictions', cfg.model.name)
+        write_dir = osp.join('testing/custom_predictions', log_dir, cfg.model.name, test_img_folder)
     
     print(f'Making predictions with {cfg.model.name}...')
     
@@ -86,17 +86,25 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
         # Write predicted images if requested
         if write:
             os.makedirs(write_dir, exist_ok=True)
-            pred_path = osp.join(write_dir, img_name + '_pred' + img_ext)
+            
+            # Determine if this is a fail case
+            is_fail_case = test and fail_cases and ASE[-1] > 0
+            
+            if is_fail_case:
+                # Set up fail case directory and paths
+                fail_dir = osp.join(write_dir, 'fail_cases')
+                os.makedirs(fail_dir, exist_ok=True)
+                pred_path = osp.join(fail_dir, img_name + '_fail' + img_ext)
+                gt_path = osp.join(fail_dir, img_name + '_gt' + img_ext)
+            else:
+                # Set up normal paths
+                pred_path = osp.join(write_dir, img_name + '_pred' + img_ext)
+                gt_path = osp.join(write_dir, img_name + '_gt' + img_ext)
+            
+            # Create the images
             img_with_pred = draw(img.copy(), pred[:, :2], cfg, circles=False, score=pred_score)
             if test:
-                gt_path = osp.join(write_dir, img_name + '_gt' + img_ext)
                 img_with_gt = draw(img.copy(), gt_xy[:, :2], cfg, circles=False, score=gt_score)
-                if fail_cases & ASE[-1] > 0:
-                    fail_dir = osp.join(write_dir, 'fail_cases')
-                    os.makedirs(fail_dir, exist_ok=True)
-                    gt_path = osp.join(fail_dir, img_name + '_gt' + img_ext)
-                    pred_path = osp.join(fail_dir, img_name + '_fail' + img_ext)   
-                    print
                 print(f'Writing GT: {gt_path}')
                 cv2.imwrite(gt_path, img_with_gt)
             print(f'Writing Pred: {pred_path}')
@@ -111,7 +119,7 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
     stats['preds'] = [pred.flatten().tolist() for pred in preds]
     stats['estimated'] = estimated
 
-    if test and ASE:
+    if test:
         ASE = np.array(ASE)
         PCS = len(ASE[ASE == 0]) / len(ASE) * 100
         MASE = np.mean(ASE)
@@ -119,30 +127,32 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
         stats['ASE']= pd.Series(ASE) if len(ASE) > 0 else pd.Series([None] * len(img_paths))
         print(f'Percent Correct Score (PCS): {PCS:.1f}%')
         print(f'Mean Absolute Score Error (MASE): {MASE:.2f}')
-
-    stats.to_csv(osp.join(log_dir, 'test_results.csv'), index=False)
-
-    with open(osp.join(log_dir, 'test_results.csv'), 'a') as f:
-        f.write(f"# FPS: {fps:.2f}\n")
-        if test:
+        logfile = osp.join(log_dir, f"{test_img_folder}_test_results.csv")
+        stats.to_csv(logfile, index=False)
+        with open(logfile, 'a') as f:
+            f.write(f"# FPS: {fps:.2f}\n")
             f.write(f"# PCS: {PCS:.2f}%\n")
             f.write(f"# MASE: {MASE:.2f}\n")
+
+    
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--cfg', default='holo_v1') # dataset config
-    parser.add_argument('-pt', '--bestpt', default='run2/train2/weights/best.pt') # best weights
     parser.add_argument('-p', '--project', default='run2') # training config
-    parser.add_argument('-e', '--experiment', default='train2') # experiment name
+    parser.add_argument('-e', '--experiment', default='train') # experiment name
 
     args = parser.parse_args()
 
     # if arguments not provided prompt user to provide them
-    img_folder = input("Enter the folder path to the images: \n")
-    if not osp.exists(img_folder) or img_folder == '':
+    test_img_folder = input("Enter the name of the folder of the images: \n")
+    if not osp.exists(osp.join('dataset/holo_v1', test_img_folder)) or test_img_folder == '':
         print("Invalid folder path using default: dataset/holo_v1/test/images")
-        img_folder = 'dataset/holo_v1/test/images'
+        test_img_folder = 'test'
+
+    path_to_imgs = osp.join('dataset/holo_v1', test_img_folder, 'images')
+    print(f"Using images from {path_to_imgs}")
 
     project = args.project
     project_name = input(f"Enter project name (default: {project}): ") or project
@@ -156,11 +166,12 @@ if __name__ == '__main__':
     log_dir = osp.join(project_name, experiment_name)
     
     # Load model and config
-    model = YOLO(args.bestpt)
+    modelpath = osp.join(project_name, experiment_name, 'weights', 'best.pt')
+    model = YOLO(modelpath)
     cfg_path = osp.join('configs', args.cfg + '.yaml')
     cfg = CfgNode(new_allowed=True)
     cfg.merge_from_file(cfg_path)
     cfg.model.name = args.cfg
     
     # Run inference
-    batch_inference(model, img_folder, cfg, test, write, fail_cases, log_dir)
+    batch_inference(model, path_to_imgs, cfg, test, write, fail_cases, log_dir, test_img_folder)
