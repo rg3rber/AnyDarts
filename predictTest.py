@@ -95,19 +95,14 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
                 os.makedirs(fail_dir, exist_ok=True)
                 pred_path = osp.join(fail_dir, img_name + '_fail' + img_ext)
                 gt_path = osp.join(fail_dir, img_name + '_gt' + img_ext)
-            else:
-                # Set up normal paths
-                pred_path = osp.join(write_dir, img_name + '_pred' + img_ext)
-                gt_path = osp.join(write_dir, img_name + '_gt' + img_ext)
-            
-            # Create the images
-            img_with_pred = draw(img.copy(), pred[:, :2], cfg, circles=False, score=pred_score)
-            if test:
-                img_with_gt = draw(img.copy(), gt_xy[:, :2], cfg, circles=False, score=gt_score)
-                print(f'Writing GT: {gt_path}')
-                cv2.imwrite(gt_path, img_with_gt)
-            print(f'Writing Pred: {pred_path}')
-            cv2.imwrite(pred_path, img_with_pred)
+                # Create the images
+                img_with_pred = draw(img.copy(), pred[:, :2], cfg, circles=False, score=pred_score)
+                if test:
+                    img_with_gt = draw(img.copy(), gt_xy[:, :2], cfg, circles=False, score=gt_score)
+                    print(f'Writing GT: {gt_path}')
+                    cv2.imwrite(gt_path, img_with_gt)
+                print(f'Writing Pred: {pred_path}')
+                cv2.imwrite(pred_path, img_with_pred)
             
     # Calculate metrics
     fps = (len(img_paths) - 1) / (time() - start_time)
@@ -146,11 +141,11 @@ if __name__ == '__main__':
 
     # if arguments not provided prompt user to provide them
     test_img_folder = input("Enter the name of the folder of the images: \n")
-    if not osp.exists(osp.join('dataset/holo_v1', test_img_folder)) or test_img_folder == '':
+    if not osp.exists(osp.join('dataset', args.cfg, test_img_folder)) or test_img_folder == '':
         print("Invalid folder path using default: dataset/holo_v1/test/images")
         test_img_folder = 'test'
 
-    path_to_imgs = osp.join('dataset/holo_v1', test_img_folder, 'images')
+    path_to_imgs = osp.join('dataset', args.cfg, test_img_folder, 'images')
     print(f"Using images from {path_to_imgs}")
 
     project = args.project
