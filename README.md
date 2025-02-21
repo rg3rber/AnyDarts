@@ -16,23 +16,15 @@ Python 3.5-3.8, CUDA >= 10.1, cuDNN >= 7.6
    If you choose this option, extract ```cropped_images.zip``` in the ```dataset``` directory.
 8. Download ```models.zip``` from IEEE Dataport and extract in the main directory.
 
-## Validation / Testing
-To test the Dataset 1 model:\
-```$ python predict.py --cfg deepdarts_d1 --split test```
+## Pipeline
 
+    Take photo
+    Save to images/utrecht_{month}{day}{year}
+    Run "annotate" on folder above using --img-folder
+    Annotate images manually
+    Run "combine_labels"
+    Run "crop_images" with --size=800 and appropriate --labels-path
 
-To test the Dataset 2 model and write the prediction images: \
-```$ python predict.py --cfg deepdarts_d2 --split test --write```
-
-
-## Training
-To train the Dataset 1 model:\
-```$ python train.py --cfg deepdarts_d1```
-
-To train the Dataset 2 model:\
-```$ python train.py --cfg deepdarts_d2```
-
-You may need to adjust the batch sizes to fit your total GPU memory. The default batch sizes are for 24 GB total GPU memory.
 
 ## Sample Test Predictions
 
