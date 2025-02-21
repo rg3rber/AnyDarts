@@ -26,6 +26,7 @@ Python 3.5-3.8, CUDA >= 10.1, cuDNN >= 7.6
 6. Run "combine_labels" 
 7. Run "crop_images" with --size=800 and appropriate --labels-path
 8. run "dump_pkl_to_txts" to get labels as txt
+9. put cropped images and labels into your dataset with YOLO structure
 
 !- DO NOT RENAME IMAGES AFTER
 
