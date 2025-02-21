@@ -11,7 +11,7 @@ import pandas as pd
 
 """ run inference on set of images"""
 
-def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False, log_dir='testing', test_img_folder='test'):
+def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False, log_dir='testing', test_folder_name='test'):
     if osp.isdir(path):
         images = os.listdir(path)
         img_paths = [osp.join(path, name) for name in images]
@@ -20,11 +20,9 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
         img_paths = [path]
 
     if test:
-        write_dir = osp.join('testing/test_predictions', log_dir, cfg.model.name, test_img_folder)
+        write_dir = osp.join('testing/test_predictions', log_dir, cfg.model.name, test_folder_name)
     else:
-        write_dir = osp.join('testing/custom_predictions', log_dir, cfg.model.name, test_img_folder)
-    
-    print(f'Making predictions with {cfg.model.name}...')
+        write_dir = osp.join('testing/custom_predictions', log_dir, cfg.model.name, test_folder_name)
     
     # Timing for FPS calculation
     start_time = time()
@@ -39,7 +37,7 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
 
         img_name, img_ext = osp.splitext(osp.basename(p))[0], osp.splitext(osp.basename(p))[1]
         
-        results = model(p, max_det=4+cfg.model.max_darts) # YOLO expects RGB images so give it the path
+        results = model(p, max_det=4+cfg.model.max_darts, verbose=False) # YOLO expects RGB images so give it the path
         boxes = results[0].boxes
         xywh = boxes.xywh.numpy()
         classes = boxes.cls.numpy()
@@ -76,7 +74,7 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
                     gt_score = sum(get_dart_scores(gt_xy, cfg, numeric=True))
                     ASE.append(abs(pred_score - gt_score))
                 else:
-                    ValueError(f'Found Labels but incorrect processing {p}: labels= {labels}')
+                    ValueError(f'Found Labels but incorrect processing {p}: labels={labels}')
 
             else:
                 ValueError(f'No label file found for {p}')
@@ -106,7 +104,6 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
             
     # Calculate metrics
     fps = (len(img_paths) - 1) / (time() - start_time)
-    print(f'FPS: {fps:.2f}')
     
     stats = pd.DataFrame()
     stats['img_paths'] = img_paths
@@ -119,53 +116,71 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
         MASE = np.mean(ASE)
         stats['gt_xys'] = [gt.flatten().tolist() for gt in gt_xys]
         stats['ASE']= pd.Series(ASE) if len(ASE) > 0 else pd.Series([None] * len(img_paths))
-        print(f'Percent Correct Score (PCS): {PCS:.1f}%')
-        print(f'Mean Absolute Score Error (MASE): {MASE:.2f}')
-        logfile = osp.join(log_dir, f"{test_img_folder}_test_results.csv")
+        print(f'Model: {log_dir}, Test Folder: {test_folder_name}, FPS: {fps:.2f}, PCS: {PCS:.1f}%, MASE: {MASE:.2f}')
+        logfile = osp.join(log_dir, f"{test_folder_name}.csv")
         stats.to_csv(logfile, index=False)
         with open(logfile, 'a') as f:
             f.write(f"# FPS: {fps:.2f}\n")
             f.write(f"# PCS: {PCS:.2f}%\n")
             f.write(f"# MASE: {MASE:.2f}\n")
 
-    
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--cfg', default='holo_v1') # dataset config
-    parser.add_argument('-p', '--project', default='first_run') # training config
-    parser.add_argument('-e', '--experiment', default='train') # experiment name
+    parser.add_argument('-a', '--all-models', action='store_true') # run all models
+    parser.add_argument('-p', '--project', default='run2') # training config
+    parser.add_argument('-e', '--experiment', default='train2') # experiment name
 
     args = parser.parse_args()
 
-    # if arguments not provided prompt user to provide them
-    test_img_folder = input("Enter the name of the folder of the images: \n")
-    if not osp.exists(osp.join('dataset', args.cfg, test_img_folder)) or test_img_folder == '':
-        print("Invalid folder path using default: dataset/holo_v1/test/images")
-        test_img_folder = 'test'
-
-    path_to_imgs = osp.join('dataset', args.cfg, test_img_folder, 'images')
-    print(f"Using images from {path_to_imgs}")
-
-    project = args.project
-    project_name = input(f"Enter project name (default: {project}): ") or project
-    experiment = args.experiment
-    experiment_name = input(f"Enter experiment name (default: {experiment}): ") or experiment
-
-    test = input("Do the images have corresponding labels? (y/n): ").lower() == 'y'
-    write = input("Do you want to write predicted images? (y/n): ").lower() == 'y'
-    fail_cases = input("Do you want to write failed cases? (y/n): ").lower() == 'y'
-    
-    log_dir = osp.join(project_name, experiment_name)
-    
-    # Load model and config
-    modelpath = osp.join(project_name, experiment_name, 'weights', 'best.pt')
-    model = YOLO(modelpath)
     cfg_path = osp.join('configs', args.cfg + '.yaml')
     cfg = CfgNode(new_allowed=True)
     cfg.merge_from_file(cfg_path)
     cfg.model.name = args.cfg
     
-    # Run inference
-    batch_inference(model, path_to_imgs, cfg, test, write, fail_cases, log_dir, test_img_folder)
+    run_on_all_subsets = True
+    test_set_config = []
+
+    # if arguments not provided prompt user to provide them
+    test_img_folder = input("Enter the name of the single test folder or leave blank to run on all test_folders: \n")
+    if not osp.exists(osp.join('dataset', args.cfg, test_img_folder)) or test_img_folder == '':
+        print(f"Invalid folder path using default: dataset/{args.cfg}")
+        test_img_folder = osp.join('dataset', args.cfg)
+    else:
+        run_on_all_subsets = False
+        test_img_folder = osp.join('dataset', args.cfg, test_img_folder)
+        path_to_imgs = [osp.join('dataset', args.cfg, test_img_folder, 'images')]
+
+    if run_on_all_subsets:
+        for dirs in os.listdir(test_img_folder):
+            if dirs.startswith('test_'):
+                test_set_config.append((dirs, osp.join(test_img_folder, dirs, 'images')))
+            
+    print(f"Using images from {test_set_config}")
+
+    if args.all_models == True:
+        #manually collect all project + expirement runs
+        list_of_models = [('first_run', 'train'), ('run2', 'train'), ('run2', 'train2'), ('run3', 'train'), ('run3', 'train-640'), ('run4', 'train')]
+    else:
+        project = args.project
+        project_name = input(f"Enter project name (default: {project}): ") or project
+        experiment = args.experiment
+        experiment_name = input(f"Enter experiment name (default: {experiment}): ") or experiment
+        list_of_models = [(args.project, args.experiment)]
+
+    print("list of models to run: ", list_of_models)
+    
+    test = input("Do the images have corresponding labels? (y/n): ").lower() == 'y'
+    write = input("Do you want to write predicted images? (y/n): ").lower() == 'y'
+    fail_cases = input("Do you want to write failed cases? (y/n): ").lower() == 'y'
+
+    for project_name, experiment_name in list_of_models:
+        log_dir = osp.join(project_name, experiment_name)
+        # Load model and config
+        modelpath = osp.join(log_dir, 'weights', 'best.pt')
+        model = YOLO(modelpath)
+
+        # run on all test subsets (dirs that start with "test_")
+        for dirname, img_path in test_set_config:
+            batch_inference(model, img_path, cfg, test, write, fail_cases, log_dir,  dirname)
