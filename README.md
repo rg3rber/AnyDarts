@@ -18,12 +18,16 @@ Python 3.5-3.8, CUDA >= 10.1, cuDNN >= 7.6
 
 ## Pipeline
 
-    Take photo
-    Save to images/utrecht_{month}{day}{year}
-    Run "annotate" on folder above using --img-folder
-    Annotate images manually
-    Run "combine_labels"
-    Run "crop_images" with --size=800 and appropriate --labels-path
+1. Take photos
+2. Save in session folder to dataset/images
+3. run image renaming script (excluding the images that are already annotated) using start id where you left off last time
+4. Run "annotate" on folder above using --img-folder
+5. Annotate images manually per folder
+6. Run "combine_labels" 
+7. Run "crop_images" with --size=800 and appropriate --labels-path
+8. run "dump_pkl_to_txts" to get labels as txt
+
+!- DO NOT RENAME IMAGES AFTER
 
 
 ## Sample Test Predictions
