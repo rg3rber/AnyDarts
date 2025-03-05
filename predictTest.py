@@ -11,7 +11,7 @@ import pandas as pd
 
 """ run inference on set of images"""
 
-def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False, log_dir='testing', test_folder_name='test'):
+def batch_inference(model, path, cfg, test=False, write=False, only_fail_cases=False, log_dir='testing', test_folder_name='test'):
     if osp.isdir(path):
         images = os.listdir(path)
         img_paths = [osp.join(path, name) for name in images]
@@ -85,22 +85,28 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
             os.makedirs(write_dir, exist_ok=True)
             
             # Determine if this is a fail case
-            is_fail_case = test and fail_cases and ASE[-1] > 0
+            is_fail_case = test and ASE[-1] > 0
+            pred_path = osp.join(write_dir, img_name + '_pred' + img_ext)
+            gt_path = osp.join(write_dir, img_name + '_gt' + img_ext)
             
             if is_fail_case:
                 # Set up fail case directory and paths
                 fail_dir = osp.join(write_dir, 'fail_cases')
-                os.makedirs(fail_dir, exist_ok=True)
                 pred_path = osp.join(fail_dir, img_name + '_fail' + img_ext)
                 gt_path = osp.join(fail_dir, img_name + '_gt' + img_ext)
-                # Create the images
-                img_with_pred = draw(img.copy(), pred[:, :2], cfg, circles=False, score=pred_score)
-                if test:
-                    img_with_gt = draw(img.copy(), gt_xy[:, :2], cfg, circles=False, score=gt_score)
-                    print(f'Writing GT: {gt_path}')
-                    cv2.imwrite(gt_path, img_with_gt)
-                print(f'Writing Pred: {pred_path}')
-                cv2.imwrite(pred_path, img_with_pred)
+            else:
+                if only_fail_cases: # Skip writing if not a fail case
+                    continue
+            os.makedirs(fail_dir, exist_ok=True)
+            
+            # Create the images
+            img_with_pred = draw(img.copy(), pred[:, :2], cfg, circles=False, score=pred_score)
+            if test:
+                img_with_gt = draw(img.copy(), gt_xy[:, :2], cfg, circles=False, score=gt_score)
+                print(f'Writing GT: {gt_path}')
+                cv2.imwrite(gt_path, img_with_gt)
+            print(f'Writing Pred: {pred_path}')
+            cv2.imwrite(pred_path, img_with_pred)
             
     # Calculate metrics
     fps = (len(img_paths) - 1) / (time() - start_time)
@@ -149,15 +155,16 @@ if __name__ == '__main__':
         test_img_folder = osp.join('dataset', args.cfg)
     else:
         run_on_all_subsets = False
-        test_img_folder = osp.join('dataset', args.cfg, test_img_folder)
-        path_to_imgs = [osp.join('dataset', args.cfg, test_img_folder, 'images')]
+        path_to_imgs = osp.join('dataset', args.cfg, test_img_folder, 'images')
 
     if run_on_all_subsets:
         for dirs in os.listdir(test_img_folder):
             if dirs.startswith('test_'):
                 test_set_config.append((dirs, osp.join(test_img_folder, dirs, 'images')))
+    else:
+        test_set_config.append((test_img_folder, path_to_imgs))
             
-    print(f"Using images from {test_set_config}")
+    print(f"Using test set config: {test_set_config}")
 
     if args.all_models == True:
         #manually collect all project + expirement runs
@@ -173,7 +180,7 @@ if __name__ == '__main__':
     
     test = input("Do the images have corresponding labels? (y/n): ").lower() == 'y'
     write = input("Do you want to write predicted images? (y/n): ").lower() == 'y'
-    fail_cases = input("Do you want to write failed cases? (y/n): ").lower() == 'y'
+    only_fail_cases = input("If you want to write, do you want to only write failed cases? (y/n): ").lower() == 'y'
 
     for project_name, experiment_name in list_of_models:
         log_dir = osp.join(project_name, experiment_name)
@@ -183,4 +190,4 @@ if __name__ == '__main__':
 
         # run on all test subsets (dirs that start with "test_")
         for dirname, img_path in test_set_config:
-            batch_inference(model, img_path, cfg, test, write, fail_cases, log_dir,  dirname)
+            batch_inference(model, img_path, cfg, test, write, only_fail_cases, log_dir,  dirname)
