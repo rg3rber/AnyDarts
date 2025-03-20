@@ -252,6 +252,7 @@ dataset/holo_v2/
 dataset/cropped_images/
 dataset/images/
 dataset/annotations/labels
+data/*
 
 # exclude working models
 models/

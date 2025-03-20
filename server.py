@@ -13,7 +13,6 @@ import requests
 import os
 from DartsPrediction import score
 
-app = flask.Flask(__name__)
 CORS(app)
 
 logging.basicConfig(
