@@ -248,6 +248,7 @@ uploads/
 # exclude dataset
 dataset/
 data/*
+gray_v2/
 
 # exclude working models
 models/
