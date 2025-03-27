@@ -6,7 +6,6 @@ import pandas as pd
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='holo_v1') # dataset config
     parser.add_argument('-a', '--all-models', action='store_true') # run all models
     parser.add_argument('-p', '--project', default='run2') # training config
     parser.add_argument('-e', '--experiment', default='train2') # experiment name
@@ -16,7 +15,7 @@ if __name__ == '__main__':
     list_of_models = [(args.project, args.experiment)]
 
     if args.all_models == True:
-        list_of_models = [('first_run', 'train'), ('run2', 'train'), ('run2', 'train2'), ('run3', 'train'), ('run3', 'train-640'), ('run4', 'train')]
+        list_of_models = [('first_run', 'train'), ('run2', 'train'), ('run2', 'train2'), ('run3', 'train'), ('run3', 'train-640'), ('run4', 'train'), ('run_gray', 'train'), ('run_v3', 'train')]
 
     for project, experiment in list_of_models:
         project_name = project
