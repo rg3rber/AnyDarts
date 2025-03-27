@@ -174,6 +174,10 @@ def get_dart_scores(xy, cfg, numeric=False):
     return scores
 
 def draw(img, xy, cfg, circles, score, color=(255, 255, 0)):
+    """
+    img: image to draw on
+    xy: array of x and y coordinates for calibration points (first 4) and darts (up to last 3)
+    """
     xy = np.array(xy)
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 2
