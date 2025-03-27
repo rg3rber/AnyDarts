@@ -1,5 +1,7 @@
 Test Set Name,FPS,PCS,MASE
+test_occlusion,7.13,0.4,10.5
 test_v1,7.5,0.44780000000000003,11.94
+test_occlusionAngles,7.3,0.2,14.47
 test_results,6.83,0.44780000000000003,11.94
 test_easy1,7.54,0.907,1.79
 test_rim,6.69,0.8,3.07
