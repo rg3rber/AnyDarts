@@ -1,4 +1,4 @@
-# run1 autoaugment
+# run1 augmix
 
 task: detect # (str) YOLO task, i.e. detect, segment, classify, pose, obb
 mode: train # (str) YOLO mode, i.e. train, val, predict, export, track, benchmark
