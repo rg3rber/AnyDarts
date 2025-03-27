@@ -66,7 +66,7 @@ train: WARNING ⚠️ /local/home/rgerber/HoloDarts/dataset/holo_v1/train/images
 
 ## holo_v2:
 
-train: additional 203 => 1094 imgs
+train: additional 203 => 1092 imgs
 
 val: additional 70 => 214
 
