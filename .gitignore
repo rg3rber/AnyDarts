@@ -244,11 +244,20 @@ wandb/
 runs/detect/
 testing/test_predictions/**/*.jpg
 uploads/
-models/
 
-# exclude dataset
-
-dataset/
+# exclude datasets but include labels
+dataset/holo_v1/
+dataset/holo_v2/
+dataset/cropped_images/
+dataset/images/
+dataset/annotations/labels
+data/
+gray_v2/
+dataset/to_augment/
+dataset/augmented/
+dataset/check_labels_from_yolo_ds/
+dataset/checking_labels/
+dataset/holo_v3/
 
 # exclude working models
 models/
