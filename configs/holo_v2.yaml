@@ -3,8 +3,8 @@
 model:
   name: holo_v2
   input_size: 800
-  weights: ../run2/train2/weights/best.pt
-  training_weights: ../training/yolo11s.pt
+  weights: ../training/yolo11n.pt
+  trained_weights: ../run2/train2/weights/best.pt
   max_darts: 3
   bbox_size: 0.025  # fraction of input size
 

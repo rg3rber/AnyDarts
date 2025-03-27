@@ -18,7 +18,7 @@ if __name__ == '__main__':
     cfg.merge_from_file(cfg_path)
     cfg.model.name = args.cfg
     
-    model = YOLO("yolo11s.yaml").load(cfg.model.weights)
+    model = YOLO("yolo11n.yaml").load(cfg.model.weights)
 
     overwrite_run = False
     train_cfg = osp.join('training', 'cfg.yaml')
