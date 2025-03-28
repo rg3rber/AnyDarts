@@ -262,6 +262,7 @@ dataset/holo_v3/
 
 # exclude working models
 models/
+*.pt
 
 # exclude ds store
 .DS_Store
