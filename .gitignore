@@ -255,6 +255,7 @@ dataset/annotations/labels
 data/
 gray_v2/
 dataset/to_augment/
+dataset/to_check/
 dataset/augmented/
 dataset/check_labels_from_yolo_ds/
 dataset/checking_labels/
