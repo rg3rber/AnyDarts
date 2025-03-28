@@ -6,6 +6,18 @@ model:
   weights: ../training/yolo11s.pt
   max_darts: 3
   bbox_size: 0.025  # fraction of input size
+  all_models:
+    - [first_run, train] # on holo_v1 dataset
+    - [first_run, train-augmix] # on holo_v1 dataset
+    - [first_run, train-auto] # on holo_v1 dataset
+    - [run2, train]
+    - [run2, train2]
+    - [run3, train]
+    - [run3, train-640]
+    - [run4, train] 
+    - [run_gray, train2] # on gray dataset
+    - [run_11n, train2]
+    - [run_v3, train] # on holo_v3 datasest
 
 board:
   r_board: 0.2255  # radius of full board

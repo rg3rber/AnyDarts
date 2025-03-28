@@ -11,7 +11,7 @@ import pandas as pd
 
 """ run inference on set of images"""
 
-def batch_inference(model, path, cfg, test=False, write=False, only_fail_cases=False, log_dir='testing', test_folder_name='test'):
+def batch_inference(model, path, cfg, test=False, write=False, only_fail_cases=False, log_dir='testing', test_folder_name='test', overwrite=False):
     if osp.isdir(path):
         images = os.listdir(path)
         img_paths = [osp.join(path, name) for name in images]
@@ -24,6 +24,12 @@ def batch_inference(model, path, cfg, test=False, write=False, only_fail_cases=F
     else:
         write_dir = osp.join('testing/custom_predictions', log_dir, cfg.model.name, test_folder_name)
     
+
+    try:
+        os.makedirs(write_dir, exist_ok=overwrite) # overwrite if requested, else skip
+    except FileExistsError:
+        print(f"Directory {write_dir} already exists")
+        return
     # Timing for FPS calculation
     start_time = time()
     preds = np.zeros((len(img_paths), 4 + cfg.model.max_darts, 3))
@@ -138,6 +144,7 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--all-models', action='store_true') # run all models
     parser.add_argument('-p', '--project', default='run2') # training config
     parser.add_argument('-e', '--experiment', default='train2') # experiment name
+    parser.add_argument('-f', '--force', action='store_true') # forcce overwrite results
 
     args = parser.parse_args()
 
@@ -169,7 +176,7 @@ if __name__ == '__main__':
 
     if args.all_models == True:
         #manually collect all project + expirement runs
-        list_of_models = [('first_run', 'train'), ('run2', 'train'), ('run2', 'train2'), ('run3', 'train'), ('run3', 'train-640'), ('run4', 'train')]
+        list_of_models = cfg.model.all_models
     else:
         project = args.project
         project_name = input(f"Enter project name (default: {project}): ") or project
@@ -191,4 +198,4 @@ if __name__ == '__main__':
 
         # run on all test subsets (dirs that start with "test_")
         for dirname, img_path in test_set_config:
-            batch_inference(model, img_path, cfg, test, write, only_fail_cases, log_dir,  dirname)
+            batch_inference(model, img_path, cfg, test, write, only_fail_cases, log_dir,  dirname, args.force)
