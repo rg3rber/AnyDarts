@@ -1,0 +1,10 @@
+Test Set Name,FPS,PCS,MASE
+test_occlusionOnly,6.98,0.0909,13.09
+test_occlusion,7.27,0.5,7.2
+test_v1,7.62,0.7463,4.88
+test_occlusionAngles,7.37,0.4,9.73
+test_easy1,7.51,0.9534999999999999,0.93
+test_rim,6.78,0.9333,2.4
+test_blueVsBlack3,7.1,0.5789,10.74
+test_samsung,7.36,1.0,0.0
+Total,7.24875,0.6503625,6.12125
