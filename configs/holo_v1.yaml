@@ -11,12 +11,13 @@ model:
     - [first_run, train-augmix] # on holo_v1 dataset
     - [first_run, train-auto] # on holo_v1 dataset
     - [run2, train]
-    - [run2, train2]
-    - [run3, train]
-    - [run3, train-640]
-    - [run4, train] 
+    - [run2, train2] # holo_v1
+    - [run3, train] # holo_v1
+    - [run3, train-640] # holo_v1
+    - [run4, train] # holo_v2
+    - [run4, train2] # holo_v2
     - [run_gray, train2] # on gray dataset
-    - [run_11n, train2]
+    - [run_11n, train2] # holo_v2
     - [run_v3, train] # on holo_v3 datasest
 
 board:
