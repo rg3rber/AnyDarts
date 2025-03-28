@@ -263,6 +263,7 @@ dataset/to_check/
 
 # exclude working models
 models/
+*.pt
 
 # exclude ds store
 .DS_Store
