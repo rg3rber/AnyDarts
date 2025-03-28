@@ -92,12 +92,13 @@ def batch_inference(model, path, cfg, test=False, write=False, only_fail_cases=F
             if is_fail_case:
                 # Set up fail case directory and paths
                 fail_dir = osp.join(write_dir, 'fail_cases')
+                os.makedirs(fail_dir, exist_ok=True)
                 pred_path = osp.join(fail_dir, img_name + '_fail' + img_ext)
                 gt_path = osp.join(fail_dir, img_name + '_gt' + img_ext)
             else:
                 if only_fail_cases: # Skip writing if not a fail case
                     continue
-            os.makedirs(fail_dir, exist_ok=True)
+
             
             # Create the images
             img_with_pred = draw(img.copy(), pred[:, :2], cfg, circles=False, score=pred_score)
