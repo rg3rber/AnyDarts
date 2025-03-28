@@ -252,6 +252,7 @@ gray_v2/
 
 # exclude working models
 models/
+*.pt
 
 # exclude ds store
 .DS_Store
