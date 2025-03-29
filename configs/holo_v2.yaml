@@ -11,6 +11,7 @@ model:
     - [first_run, train] # on holo_v1 dataset
     - [first_run, train-augmix] # on holo_v1 dataset
     - [first_run, train-auto] # on holo_v1 dataset
+    - [first_run, mosaic_v1] # on holo_v1 dataset
     - [run2, train]
     - [run2, train2] # holo_v1
     - [run3, train] # holo_v1
