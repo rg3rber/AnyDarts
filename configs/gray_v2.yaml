@@ -18,6 +18,7 @@ model:
     - [run4, train2] # holo_v2
     - [run_gray, train2] # on gray dataset
     - [run_11n, train2] # holo_v2
+    - [run_11m, default] # holo_v2
     - [run_v3, train] # on holo_v3 datasest
 
 board:
