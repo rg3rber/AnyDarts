@@ -1,10 +1,16 @@
 Test Set Name,FPS,PCS,MASE
-test_occlusionOnly,6.81,0.0909,11.73
-test_occlusion,7.17,0.5,6.45
-test_v1,7.39,0.44780000000000003,18.27
-test_occlusionAngles,7.28,0.4,9.93
-test_easy1,7.4,0.9301999999999999,3.26
-test_rim,5.79,0.9333,2.13
-test_blueVsBlack3,7.18,0.5263,8.79
-test_samsung,7.23,1.0,0.0
-Total,7.03125,0.6035625,7.57
+test_front3Hard,6.91,0.5238,4.76
+test_occlusionOnly,6.66,0.0909,11.73
+test_occlusion,6.8,0.5,6.45
+test_v1,7.13,0.44780000000000003,18.27
+test_zoom,6.29,0.7,7.4
+test_occlusionAngles,6.92,0.4,9.93
+test_precision,6.59,0.7,6.9
+test_fullBlueVsBlack,7.06,0.8234999999999999,3.23
+test_easy1,6.92,0.9301999999999999,3.26
+test_generalization,6.88,0.2,42.55
+test_rim,6.48,0.9333,2.13
+test_blueVsBlack3,6.7,0.5263,8.79
+test_samsung,6.74,1.0,0.0
+test_diffDarts,6.89,0.72,2.8
+Total,6.783571428571428,0.6068428571428571,9.157142857142857
