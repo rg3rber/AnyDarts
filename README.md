@@ -43,6 +43,8 @@ Dataset 2:\
 
 Latest image id: 1055 (791 in d3_26_12_2024_random)
 
+Latest test image id: 1459
+
 ## Dataset holo_v1
 
 ### train: 889 (891 initial) imgs
