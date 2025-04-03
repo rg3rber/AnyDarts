@@ -14,5 +14,6 @@ test_generalization,6.85,0.35,31.5
 test_rim,6.63,0.4667,20.07
 test_blueVsBlack3,6.88,0.4211,11.74
 test_samsung,6.9,0.95,0.1
+test_d2_renamed,7.83,0.5067,8.63
 test_diffDarts,7.05,0.72,2.88
-Total,6.89,0.59948125,9.23
+Total,6.945294117647059,0.5940235294117647,9.194705882352942
