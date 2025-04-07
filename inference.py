@@ -4,11 +4,11 @@ import cv2
 import argparse
 from yacs.config import CfgNode
 import os.path as osp
-from HelperFunctions import bboxes_to_xy, get_dart_scores
+from HelperFunctions import bboxes_to_xy, get_dart_scores, draw
 import numpy as np
 
 
-def inference(model, img_board, cfg):
+def inference(model, img_board, cfg, img_name=None):
     """
     img_board: original image cropped to board
     """
@@ -29,6 +29,13 @@ def inference(model, img_board, cfg):
     
     scores = get_dart_scores(xy, cfg, True)
     score = np.sum(scores)
+
+    if img_name is not None:
+        img_base_name = osp.splitext(osp.basename(img_name))[0]
+        img_dir = osp.dirname(img_name)
+        predicted_filename = osp.join(img_dir, f"{img_base_name}_pred.jpg")
+        img_with_pred = draw(img_board.copy(), xy[:, :2], cfg, circles=False, score=score)
+        cv2.imwrite(predicted_filename, img_with_pred)
 
     return score
 

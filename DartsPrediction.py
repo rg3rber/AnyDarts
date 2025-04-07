@@ -24,7 +24,7 @@ def crop(img, boardbbox, cfg):
     crop = cv2.resize(crop, (size, size))
     return crop
 
-def score(img, cfgFile="holodarts", debug=False):
+def score(img, cfgFile="holodarts", debug=False, img_name=None):
     """
     img: original image or path to image to run inference on
     returns: scores of the darts in the image
@@ -44,7 +44,8 @@ def score(img, cfgFile="holodarts", debug=False):
     cfg.merge_from_file(osp.join('configs', cfgFile + '.yaml'))
 
     #TODO: once model is working and path is inside config: model = YOLO(cfg.model.name)
-    model = YOLO('models/holo_train2/weights/best.pt')
+    #old: model = YOLO('models/holo_train2/weights/best.pt')
+    model = YOLO("first_run/mosaic_v22/weights/best.pt")
 
     boardbbox = find_board(img)
     if boardbbox is None:
@@ -57,7 +58,7 @@ def score(img, cfgFile="holodarts", debug=False):
         cv2.destroyAllWindows()
 
     starttime = time()
-    score = inference(model, board, cfg)
+    score = inference(model, board, cfg, img_name=img_name)
     print(f"Inference time taken: {time() - starttime}")
 
     return score

@@ -49,7 +49,7 @@ def handle_image_upload():
         
         # Attempt to score the image
         try:
-            dart_score = score(full_path, cfgFile="holo_v1")
+            dart_score = score(full_path, cfgFile="holo_v1", img_name=full_path)
             logger.info(f"Image processed: {full_path}, Score: {dart_score}")
             return str(dart_score)  # Return as string for easy parsing
         except Exception as e:
