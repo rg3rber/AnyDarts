@@ -1,4 +1,4 @@
-# first_run/mosaic_v2_no_pretrain first run mosaic on holo_v2 no pretraining
+# first run mosaic on holo_v2
 
 task: detect # (str) YOLO task, i.e. detect, segment, classify, pose, obb
 mode: train # (str) YOLO mode, i.e. train, val, predict, export, track, benchmark
@@ -19,7 +19,7 @@ workers: 8 # (int) number of worker threads for data loading (per RANK if DDP)
 project: first_run # (str, optional) project name
 name: mosaic_v2 # (str, optional) experiment name, results saved to 'project/name' directory
 exist_ok: False # (bool) whether to overwrite existing experiment
-pretrained: False # (bool | str) whether to use a pretrained model (bool) or a model to load weights from (str)
+pretrained: True # (bool | str) whether to use a pretrained model (bool) or a model to load weights from (str)
 optimizer: auto # (str) optimizer to use, choices=[SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto]
 verbose: True # (bool) whether to print verbose output
 seed: 0 # (int) random seed for reproducibility
