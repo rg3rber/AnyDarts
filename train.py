@@ -7,7 +7,7 @@ import os.path as osp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='holo_v1')
+    parser.add_argument('-c', '--cfg', default='holo_v2')
     #parser.add_argument('-t', '--times', default=4) # total number of images as multiple of original
     args = parser.parse_args()
 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     cfg.merge_from_file(cfg_path)
     cfg.model.name = args.cfg
     #train_from_weights = "first_run/train/weights/best.pt"
-    model = YOLO("yolo11s.yaml")
+    model = YOLO("training/yolo11m.pt")
 
     overwrite_run = False
     train_cfg = osp.join('training', 'cfg.yaml')
