@@ -33,7 +33,7 @@ def draw_labels(cfg, dataset_path, output_path):
             for line in lines:
                 class_id, x_center, y_center, w, h = line.split(' ')
                 x_center, y_center, w, h = float(x_center), float(y_center), float(w), float(h)
-                class_id = int(class_id)
+                class_id = int(float(class_id))
                 if x_center < 0 or x_center > 1 or y_center < 0 or y_center > 1:
                     print(f"Invalid label in {label_file}")
                     raise ValueError("Invalid label")
@@ -48,7 +48,10 @@ def draw_labels(cfg, dataset_path, output_path):
         image_path = os.path.join(train_images_path, image_name+'.jpg')
         img = cv2.imread(image_path)
         img = draw(img, xy, cfg, False, True)
-        cv2.imwrite(os.path.join(train_output_path, image_name + '_annotated.jpg' ), img)
+        cv2.imshow("Annotated Image", img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        #cv2.imwrite(os.path.join(train_output_path, image_name + '_annotated.jpg' ), img)
 
 
 if __name__ == '__main__':

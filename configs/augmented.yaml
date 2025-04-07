@@ -1,0 +1,66 @@
+# Global HoloDarts Config for custom Augmented Dataset
+
+model:
+  name: augmented
+  input_size: 800
+  weights: ../training/yolo11s.pt
+  trained_weights: ../run2/train2/weights/best.pt
+  max_darts: 3
+  bbox_size: 0.025  # fraction of input size
+  all_models:
+    - [first_run, train] # on holo_v1 dataset
+    - [first_run, train-augmix] # on holo_v1 dataset
+    - [first_run, train-auto] # on holo_v1 dataset
+    - [first_run, mosaic_v1] # on holo_v1 dataset
+    - [first_run, mosaic_v22] # on holo_v2 dataset
+    - [run2, train]
+    - [run2, train2] # holo_v1
+    - [run3, train] # holo_v1
+    - [run3, train-640] # holo_v1
+    - [run4, train] # holo_v2
+    - [run4, train2] # holo_v2
+    - [run_gray, train2] # on gray dataset
+    - [run_11n, train2] # holo_v2
+    - [run_11m, default] # holo_v2
+    - [run_v3, train] # on holo_v3 datasest
+
+board:
+  r_board: 0.2255  # radius of full board
+  r_double: 0.170  # center bull to outside double wire edge, in m (BDO standard)
+  r_treble: 0.1074  # center bull to outside treble wire edge, in m (BDO standard)
+  r_outer_bull: 0.0159
+  r_inner_bull: 0.00635
+  w_double_treble: 0.01  # wire apex to apex for double and treble
+
+#Classes: 5
+names:
+  0: cal1
+  1: cal2
+  2: cal3
+  3: cal4
+  4: dart
+
+# used to convert dart angle to board number
+BOARD_DICT:
+  0: '13'
+  1: '4'
+  2: '18'
+  3: '1'
+  4: '20'
+  5: '5'
+  6: '12'
+  7: '9'
+  8: '14'
+  9: '11'
+  10: '8'
+  11: '16'
+  12: '7'
+  13: '19'
+  14: '3'
+  15: '17'
+  16: '2'
+  17: '15'
+  18: '10'
+  19: '6'
+
+

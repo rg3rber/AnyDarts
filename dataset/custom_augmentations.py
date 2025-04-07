@@ -40,153 +40,208 @@ def apply_augmentations(img, classes, bboxes, aug_config):
     calib_indices = [i for i, cls in enumerate(classes) if cls < 4]
     dart_indices = [i for i, cls in enumerate(classes) if cls >= 4]
     
-    calib_classes = [classes[i] for i in calib_indices]
-    calib_bboxes = [bboxes[i] for i in calib_indices]
+    # Make sure inputs are valid and handle empty cases
+    if not dart_indices:
+        return img.copy(), classes.copy(), bboxes.copy(), []
     
     dart_classes = [classes[i] for i in dart_indices]
     dart_bboxes = [bboxes[i] for i in dart_indices]
     
+    # Make sure all bounding boxes are valid
+    dart_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in dart_bboxes]
+    
     augmented_img = img.copy()
     augmented_classes = classes.copy()
     augmented_bboxes = bboxes.copy()
-
+    
+    # Make sure all initial bounding boxes are valid
+    augmented_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in augmented_bboxes]
+    
     # TODO remove
     augs_applied = []
     
     # Apply random augmentations based on probabilities
     if np.random.uniform() < aug_config['overall_prob']:
-        # Horizontal flip
+        # Horizontal flip for darts only
         if np.random.uniform() < aug_config['flip_lr_prob']:
-            # Only flip dart bboxes
-            flip_transform = A.Compose([
-                A.HorizontalFlip(p=1.0)
-            ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
-            
-            augmented = flip_transform(
-                image=augmented_img,
-                bboxes=dart_bboxes,
-                classes=dart_classes
-            )
-            
-            augmented_img = augmented['image']
-            
-            # Update dart bboxes
-            for i, idx in enumerate(dart_indices):
-                augmented_bboxes[idx] = augmented['bboxes'][i]
-            augs_applied.append('flip_lr')  # TODO remove
+            try:
+                flip_transform = A.Compose([
+                    A.HorizontalFlip(p=1.0)
+                ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
+                
+                augmented = flip_transform(
+                    image=augmented_img,
+                    bboxes=dart_bboxes,
+                    classes=dart_classes
+                )
+                
+                augmented_img = augmented['image']
+                
+                # Update dart bboxes
+                for i, idx in enumerate(dart_indices):
+                    if i < len(augmented['bboxes']):
+                        augmented_bboxes[idx] = np.clip(augmented['bboxes'][i], 0.0, 1.0)
+                
+                augs_applied.append('flip_lr')
+            except Exception as e:
+                print(f"Error in horizontal flip: {e}")
+                # Continue with the next transformation
         
-        # Vertical flip
+        # Vertical flip for darts only
         if np.random.uniform() < aug_config['flip_ud_prob']:
-            # Only flip dart bboxes
-            flip_transform = A.Compose([
-                A.VerticalFlip(p=1.0)
-            ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
-            
-            augmented = flip_transform(
-                image=augmented_img,
-                bboxes=dart_bboxes,
-                classes=dart_classes
-            )
-            
-            augmented_img = augmented['image']
-            
-            # Update dart bboxes
-            for i, idx in enumerate(dart_indices):
-                augmented_bboxes[idx] = augmented['bboxes'][i]
-            
-            augs_applied.append('flip_ud')  # TODO remove
+            try:
+                flip_transform = A.Compose([
+                    A.VerticalFlip(p=1.0)
+                ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
+                
+                augmented = flip_transform(
+                    image=augmented_img,
+                    bboxes=dart_bboxes,
+                    classes=dart_classes
+                )
+                
+                augmented_img = augmented['image']
+                
+                # Update dart bboxes
+                for i, idx in enumerate(dart_indices):
+                    if i < len(augmented['bboxes']):
+                        augmented_bboxes[idx] = np.clip(augmented['bboxes'][i], 0.0, 1.0)
+                
+                augs_applied.append('flip_ud')
+            except Exception as e:
+                print(f"Error in vertical flip: {e}")
+                # Continue with the next transformation
         
         # Rotation (large angles) - only for darts
         if np.random.uniform() < aug_config['rot_prob']:
-            angles = np.arange(-180, 180, step=aug_config['rot_step'])
-            angle = angles[np.random.randint(len(angles))]
-            
-            rotate_transform = A.Compose([
-                A.Rotate(limit=(angle, angle), p=1.0)
-            ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
-            
-            augmented = rotate_transform(
-                image=augmented_img,
-                bboxes=dart_bboxes,
-                classes=dart_classes
-            )
-            
-            augmented_img = augmented['image']
-            
-            # Update dart bboxes
-            for i, idx in enumerate(dart_indices):
-                augmented_bboxes[idx] = augmented['bboxes'][i]
-            
-            augs_applied.append(f'rot_{angle}')  # TODO remove
+            try:
+                angles = np.arange(-180, 180, step=aug_config['rot_step'])
+                angle = angles[np.random.randint(len(angles))]
+                
+                rotate_transform = A.Compose([
+                    A.Rotate(limit=(angle, angle), p=1.0)
+                ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
+                
+                augmented = rotate_transform(
+                    image=augmented_img,
+                    bboxes=dart_bboxes,
+                    classes=dart_classes
+                )
+                
+                augmented_img = augmented['image']
+                
+                # Update dart bboxes
+                for i, idx in enumerate(dart_indices):
+                    if i < len(augmented['bboxes']):
+                        augmented_bboxes[idx] = np.clip(augmented['bboxes'][i], 0.0, 1.0)
+                
+                augs_applied.append(f'rot_{angle}')
+            except Exception as e:
+                print(f"Error in large rotation: {e} at image {img}")
+                # Continue with the next transformation
         
         # Small rotation - for all points
         if np.random.uniform() < aug_config['rot_small_prob']:
-            angle = np.random.uniform(-aug_config['rot_small_max'], aug_config['rot_small_max'])
-            
-            rotate_transform = A.Compose([
-                A.Rotate(limit=(angle, angle), p=1.0)
-            ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
-            
-            # Apply to all bboxes
-            augmented = rotate_transform(
-                image=augmented_img,
-                bboxes=augmented_bboxes,
-                classes=augmented_classes
-            )
-            
-            augmented_img = augmented['image']
-            augmented_bboxes = augmented['bboxes']
-
-            augs_applied.append(f'rot_small_{angle}')  # TODO remove
+            try:
+                angle = np.random.uniform(-aug_config['rot_small_max'], aug_config['rot_small_max'])
+                
+                # Ensure bboxes are valid before transform
+                all_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in augmented_bboxes]
+                all_classes = augmented_classes
+                
+                rotate_transform = A.Compose([
+                    A.Rotate(limit=(angle, angle), p=1.0)
+                ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
+                
+                augmented = rotate_transform(
+                    image=augmented_img,
+                    bboxes=all_bboxes,
+                    classes=all_classes
+                )
+                
+                augmented_img = augmented['image']
+                augmented_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in augmented['bboxes']]
+                augmented_classes = augmented['classes']
+                
+                augs_applied.append(f'rot_small_{angle}')
+            except Exception as e:
+                print(f"Error in small rotation: {e} at image {img}")
+                # Continue with the next transformation
         
         # Jitter (translation)
         if np.random.uniform() < aug_config['jitter_prob']:
-            jitter = aug_config['jitter_max'] * min(h, w)
-            tx = np.random.uniform(0, jitter)
-            ty = np.random.uniform(0, jitter)
-            
-            shift_transform = A.Compose([
-            A.ShiftScaleRotate(
-                shift_limit_x=(-tx / w, tx / w),
-                shift_limit_y=(-ty / h, ty / h),
-                scale_limit=0,
-                rotate_limit=0,
-                p=1.0
-            )
-            ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
-            
-            augmented = shift_transform(
-                image=augmented_img,
-                bboxes=augmented_bboxes,
-                classes=augmented_classes
-            )
-            
-            augmented_img = augmented['image']
-            augmented_bboxes = augmented['bboxes']
-
-            augs_applied.append(f'jitter_{tx}_{ty}')  # TODO remove
+            try:
+                jitter = aug_config['jitter_max'] * min(h, w)
+                tx = np.random.uniform(0, jitter)
+                ty = np.random.uniform(0, jitter)
+                
+                # Ensure bboxes are valid before transform
+                all_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in augmented_bboxes]
+                all_classes = augmented_classes
+                
+                shift_transform = A.Compose([
+                    A.ShiftScaleRotate(
+                        shift_limit_x=(-tx / w, tx / w),
+                        shift_limit_y=(-ty / h, ty / h),
+                        scale_limit=0,
+                        rotate_limit=0,
+                        p=1.0
+                    )
+                ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
+                
+                augmented = shift_transform(
+                    image=augmented_img,
+                    bboxes=all_bboxes,
+                    classes=all_classes
+                )
+                
+                augmented_img = augmented['image']
+                augmented_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in augmented['bboxes']]
+                augmented_classes = augmented['classes']
+                
+                augs_applied.append(f'jitter_{tx}_{ty}')
+            except Exception as e:
+                print(f"Error in jitter: {e} at image {img}")
+                # Continue with the next transformation
         
         # Warp (affine transformation)
         if np.random.uniform() < aug_config['warp_prob']:
-            warp_scale = aug_config['warp_rho'] / 100.0  # Scale down to make it less aggressive
-            
-            warp_transform = A.Compose([
-                A.Affine(
-                    shear={"x": (-30*warp_scale, 30*warp_scale), "y": (-30*warp_scale, 30*warp_scale)},
-                    p=1.0
+            try:
+                warp_scale = aug_config['warp_rho'] / 100.0  # Scale down to make it less aggressive
+                
+                # Ensure bboxes and classes have the same length and are valid
+                if len(augmented_bboxes) != len(augmented_classes):
+                    min_len = min(len(augmented_bboxes), len(augmented_classes))
+                    augmented_bboxes = augmented_bboxes[:min_len]
+                    augmented_classes = augmented_classes[:min_len]
+                
+                # Ensure bboxes are valid before transform
+                augmented_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in augmented_bboxes]
+                
+                warp_transform = A.Compose([
+                    A.Affine(
+                        shear={"x": (-30*warp_scale, 30*warp_scale), "y": (-30*warp_scale, 30*warp_scale)},
+                        p=1.0
+                    )
+                ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
+                
+                augmented = warp_transform(
+                    image=augmented_img,
+                    bboxes=augmented_bboxes,
+                    classes=augmented_classes
                 )
-            ], bbox_params=A.BboxParams(format='yolo', label_fields=['classes']))
-            
-            augmented = warp_transform(
-                image=augmented_img,
-                bboxes=augmented_bboxes,
-                classes=augmented_classes
-            )
-            
-            augmented_img = augmented['image']
-            augmented_bboxes = augmented['bboxes']
-
-            augs_applied.append(f'warp_{warp_scale}')  # TODO remove
+                
+                augmented_img = augmented['image']
+                augmented_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in augmented['bboxes']]
+                augmented_classes = augmented['classes']
+                
+                augs_applied.append(f'warp_{warp_scale}')
+            except Exception as e:
+                print(f"Error in warp: {e}, at image {img}")
+                # Continue with the next transformation
+    
+    # Final sanity check
+    augmented_bboxes = [np.clip(bbox, 0.0, 1.0) for bbox in augmented_bboxes]
     
     return augmented_img, augmented_classes, augmented_bboxes, augs_applied
 
@@ -228,17 +283,22 @@ def process_dataset_split(split_path, img_out_path, label_out_path, aug_config, 
     label_dir = os.path.join(split_path, 'labels')
 
     img_paths = sorted(glob.glob(os.path.join(img_dir, '*.jpg')) + 
-                      glob.glob(os.path.join(img_dir, '*.png')))
+                  glob.glob(os.path.join(img_dir, '*.JPG')) +
+                  glob.glob(os.path.join(img_dir, '*.png')) +
+                  glob.glob(os.path.join(img_dir, '*.PNG')))
     
     print(f"Processing {len(img_paths)} images in {split_path}")
 
     # Augmentations applied per image: 
     augs_applied_map = [] # TODO remove
     
-    for img_path in tqdm(img_paths):
+    for i, img_path in enumerate(tqdm(img_paths)):
         img_filename = os.path.basename(img_path)
         img_name = os.path.splitext(img_filename)[0]
         label_path = os.path.join(label_dir, f"{img_name}.txt")
+
+        if i / len(img_paths) > 0.58 and i / len(img_paths) < 0.60:
+            print(f"Processing image at {i/len(img_paths)*100:.2f}%: {img_path}")
         
         if not os.path.exists(label_path):
             print(f"Warning: No label file found for {img_filename}")
@@ -270,11 +330,11 @@ def process_dataset_split(split_path, img_out_path, label_out_path, aug_config, 
                 cv2.imwrite(aug_img_path, aug_img)
                 save_yolo_labels(aug_label_path, aug_classes, aug_bboxes)
 
-    # TODO remove
-    with open(os.path.join(label_out_path, f"_imgsAugLog.txt"), 'w') as f:
-        for aug in augs_applied_map:
-            f.write(f"{aug[0]}: {aug[1]}\n")
-        print(f"wrote augmentation log to {label_out_path}/_imgsAugLog.txt")
+    # # TODO remove
+    # with open(os.path.join(label_out_path, f"_imgsAugLog.txt"), 'w') as f:
+    #     for aug in augs_applied_map:
+    #         f.write(f"{aug[0]}: {aug[1]}\n")
+    #     print(f"wrote augmentation log to {label_out_path}/_imgsAugLog.txt")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate augmentations for YOLO dataset")

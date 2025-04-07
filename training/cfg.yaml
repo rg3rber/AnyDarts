@@ -1,4 +1,4 @@
-# first_run/mosaic_v2_no_pretrain first run mosaic on holo_v2 no pretraining
+# custom_aug
 
 task: detect # (str) YOLO task, i.e. detect, segment, classify, pose, obb
 mode: train # (str) YOLO mode, i.e. train, val, predict, export, track, benchmark
@@ -6,20 +6,20 @@ mode: train # (str) YOLO mode, i.e. train, val, predict, export, track, benchmar
 # Train settings -------------------------------------------------------------------------------------------------------
 model: # (str, optional) path to model file, i.e. yolov8n.pt, yolov8n.yaml
 data: # (str, optional) path to data file, i.e. coco8.yaml
-epochs: 100 # (int) number of epochs to train for
+epochs: 50 # (int) number of epochs to train for
 time: # (float, optional) number of hours to train for, overrides epochs if supplied
 patience: 25 # (int) epochs to wait for no observable improvement for early stopping of training
-batch: 16 # (int) number of images per batch (-1 for AutoBatch)
+batch: 10 # (int) number of images per batch (-1 for AutoBatch)
 imgsz: 800 # (int | list) input images size as int for train and val modes, or list[h,w] for predict and export modes
 save: True # (bool) save train checkpoints and predict results
 save_period: -1 # (int) Save checkpoint every x epochs (disabled if < 1)
 cache: False # (bool) True/ram, disk or False. Use cache for data loading
-device: 0 # (int | str | list, optional) device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu
+device: mps # (int | str | list, optional) device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu
 workers: 8 # (int) number of worker threads for data loading (per RANK if DDP)
-project: first_run # (str, optional) project name
-name: mosaic_v2 # (str, optional) experiment name, results saved to 'project/name' directory
+project: custom_aug # (str, optional) project name
+name: train # (str, optional) experiment name, results saved to 'project/name' directory
 exist_ok: False # (bool) whether to overwrite existing experiment
-pretrained: False # (bool | str) whether to use a pretrained model (bool) or a model to load weights from (str)
+pretrained: True # (bool | str) whether to use a pretrained model (bool) or a model to load weights from (str)
 optimizer: auto # (str) optimizer to use, choices=[SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto]
 verbose: True # (bool) whether to print verbose output
 seed: 0 # (int) random seed for reproducibility
@@ -100,22 +100,22 @@ pose: 12.0 # (float) pose loss gain
 kobj: 1.0 # (float) keypoint obj loss gain
 nbs: 64 # (int) nominal batch size
 hsv_h: 0.015 # (float) image HSV-Hue augmentation (fraction)
-hsv_s: 0.7 # (float) image HSV-Saturation augmentation (fraction)
-hsv_v: 0.4 # (float) image HSV-Value augmentation (fraction)
+hsv_s: 0.4 # (float) image HSV-Saturation augmentation (fraction)
+hsv_v: 0.3 # (float) image HSV-Value augmentation (fraction)
 degrees: 0.0 # (float) image rotation (+/- deg)
-translate: 0.1 # (float) image translation (+/- fraction)
-scale: 0.5 # (float) image scale (+/- gain)
+translate: 0 # (float) image translation (+/- fraction)
+scale: 0.0 # (float) image scale (+/- gain)
 shear: 0.0 # (float) image shear (+/- deg)
 perspective: 0.0 # (float) image perspective (+/- fraction), range 0-0.001
 flipud: 0.0 # (float) image flip up-down (probability)
-fliplr: 0.5 # (float) image flip left-right (probability)
+fliplr: 0.0 # (float) image flip left-right (probability)
 bgr: 0.0 # (float) image channel BGR (probability)
-mosaic: 1.0 # (float) image mosaic (probability)
+mosaic: 0.0 # (float) image mosaic (probability)
 mixup: 0.0 # (float) image mixup (probability)
 copy_paste: 0.0 # (float) segment copy-paste (probability)
 copy_paste_mode: flip # (str) the method to do copy_paste augmentation (flip, mixup)
-auto_augment: randaugment # (str) auto augmentation policy for classification (randaugment, autoaugment, augmix)
-erasing: 0.4 # (float) probability of random erasing during classification training (0-0.9), 0 means no erasing, must be less than 1.0.
+auto_augment: None # (str) auto augmentation policy for classification (randaugment, autoaugment, augmix)
+erasing: 0.0 # (float) probability of random erasing during classification training (0-0.9), 0 means no erasing, must be less than 1.0.
 crop_fraction: 1.0 # (float) image crop fraction for classification (0.1-1), 1.0 means no crop, must be greater than 0.
 
 # Custom config.yaml ---------------------------------------------------------------------------------------------------
