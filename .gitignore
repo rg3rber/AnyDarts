@@ -288,3 +288,40 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,python,cuda,data,images
+
+# exclude runs and tests
+wandb/
+runs/detect/
+testing/predictions/
+testing/test_predictions/**/*.jpg
+testing/test_predictions/**/*.jpeg
+uploads/
+
+# exclude datasets but include labels
+dataset/holo_v1/
+dataset/holo_v2/
+dataset/cropped_images/
+dataset/images/
+dataset/annotations/labels
+data/
+dataset/
+gray_v2/
+dataset/to_augment/
+dataset/to_check/
+dataset/augmented/
+dataset/annotations/
+dataset/augmented_10x_trainFail/
+dataset/augmented_5k/
+dataset/check_labels_from_yolo_ds/
+dataset/checking_labels/
+dataset/holo_v3/
+
+# exclude working models
+models/
+*.pt
+
+# exclude ds store
+.DS_Store
+
+# exclude screenshot
+CleanShot*
