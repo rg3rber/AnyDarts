@@ -244,6 +244,7 @@ wandb/
 runs/detect/
 testing/predictions/
 testing/test_predictions/**/*.jpg
+testing/test_predictions/**/*.jpeg
 uploads/
 
 # exclude datasets but include labels
