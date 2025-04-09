@@ -7,7 +7,7 @@ from yacs.config import CfgNode
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='holo_v2') # run all models
+    parser.add_argument('-c', '--cfg', default='holo_v2') # cfg file
     parser.add_argument('-a', '--all-models', action='store_true') # run all models
     parser.add_argument('-p', '--project', default='run2') # training config
     parser.add_argument('-e', '--experiment', default='train2') # experiment name
