@@ -1,7 +1,7 @@
 # Global HoloDarts Config for custom Augmented Dataset
 
 model:
-  name: augmented
+  name: augmented_5k
   input_size: 800
   weights: ../training/yolo11s.pt
   trained_weights: ../run2/train2/weights/best.pt

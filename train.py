@@ -7,7 +7,7 @@ import os.path as osp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='augmented')
+    parser.add_argument('-c', '--cfg', default='augmented_5k')
     #parser.add_argument('-t', '--times', default=4) # total number of images as multiple of original
     args = parser.parse_args()
 

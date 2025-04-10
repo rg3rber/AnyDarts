@@ -1,4 +1,4 @@
-# custom_aug attempt 3 on mps anyway with batch 8
+# custom_aug attempt 4 on mps anyway with batch 6 and just 5000 images
 
 task: detect # (str) YOLO task, i.e. detect, segment, classify, pose, obb
 mode: train # (str) YOLO mode, i.e. train, val, predict, export, track, benchmark
@@ -15,9 +15,9 @@ save: True # (bool) save train checkpoints and predict results
 save_period: -1 # (int) Save checkpoint every x epochs (disabled if < 1)
 cache: False # (bool) True/ram, disk or False. Use cache for data loading
 device: mps # (int | str | list, optional) device to run on, i.e. cuda device=0 or device=0,1,2,3 or device=cpu
-workers: 8 # (int) number of worker threads for data loading (per RANK if DDP)
+workers: 6 # (int) number of worker threads for data loading (per RANK if DDP)
 project: custom_aug # (str, optional) project name
-name: train3 # (str, optional) experiment name, results saved to 'project/name' directory
+name: train5000 # (str, optional) experiment name, results saved to 'project/name' directory
 exist_ok: False # (bool) whether to overwrite existing experiment
 pretrained: True # (bool | str) whether to use a pretrained model (bool) or a model to load weights from (str)
 optimizer: auto # (str) optimizer to use, choices=[SGD, Adam, Adamax, AdamW, NAdam, RAdam, RMSProp, auto]
