@@ -1,6 +1,6 @@
 # AnyDarts
 
-The APK, model weights and datasets are avalable here: [AnyDarts Google Drive Shared Folder](https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link)
+The APK, model weights and datasets are available here: [AnyDarts Google Drive Shared Folder](https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link)
 
 
 
