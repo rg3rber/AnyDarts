@@ -2,18 +2,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import argparse
+from scipy.stats import gaussian_kde
+import matplotlib.colors as colors
 
-def generate_heatmap(label_dir, output_path, image_width=640, image_height=640, class_index=4, dot_size=10):
+def generate_heatmap(label_dir, output_path, image_width=640, image_height=640, class_index=4, 
+                     bandwidth=0.05, resolution=100, colormap='hot_r', alpha=0.7, overlay=False):
     """
     Generates a heatmap visualization of bounding box centers for a specific class from YOLO-formatted labels.
 
     Args:
         label_dir (str): Path to the directory containing the YOLO-formatted label text files.
         output_path (str): Path to save the generated heatmap image.
-        image_width (int, optional): Width of the image used for normalization. Defaults to 640.
-        image_height (int, optional): Height of the image used for normalization. Defaults to 640.
-        class_index (int, optional): The class index to visualize. Defaults to 4.
-        dot_size (int, optional): Size of the dots in the heatmap.
+        image_width (int): Width of the image used for normalization. Defaults to 640.
+        image_height (int): Height of the image used for normalization. Defaults to 640.
+        class_index (int): The class index to visualize. Defaults to 4.
+        bandwidth (float): Controls the smoothness of the heatmap.
+        resolution (int): Resolution of the heatmap grid.
+        colormap (str): Matplotlib colormap to use for the heatmap.
+        alpha (float): Transparency level of the heatmap.
+        overlay (bool): Whether to overlay a scatter plot of the actual points.
     """
     x_coords = []
     y_coords = []
@@ -40,31 +47,77 @@ def generate_heatmap(label_dir, output_path, image_width=640, image_height=640, 
                                 x_coords.append(center_x)
                                 y_coords.append(center_y)
                         except ValueError as e:
-                            print(f"Error processing line in {label_file_path}: {line.strip()}. Skipping.  Error: {e}")
-            except FileNotFoundError:
-                print(f"Error: File not found at {label_file_path}")
-                continue  # Go to the next file
+                            print(f"Error processing line in {label_file_path}: {line.strip()}. Skipping. Error: {e}")
             except Exception as e:
-                print(f"An unexpected error occurred while processing {label_file_path}: {e}")
+                print(f"An error occurred while processing {label_file_path}: {e}")
                 continue
 
     if not x_coords:
         print(f"No objects of class {class_index} found in the provided labels.")
         return
 
-    # Create the heatmap
-    plt.figure(figsize=(8, 8))
-    plt.plot(x_coords, y_coords, 'o', markersize=dot_size, color='red', alpha=0.5)  # Increased alpha
-    plt.title(f'Heatmap of Class {class_index} Bounding Box Centers')
-    plt.xlabel('X Coordinate')
-    plt.ylabel('Y Coordinate')
-    plt.xlim(0, image_width)  # Set appropriate limits
-    plt.ylim(image_height, 0)  # Invert y-axis for image coordinates
-    plt.grid(False) # Remove grid lines.
+    print(f"Found {len(x_coords)} objects of class {class_index}")
 
-    # Save the heatmap
-    plt.savefig(output_path)
-    plt.show()  # Display the heatmap
+    # Create the figure
+    plt.figure(figsize=(10, 10))
+    
+    # Create a meshgrid for the heatmap
+    x_min, x_max = 0, image_width
+    y_min, y_max = 0, image_height
+    
+    x_grid = np.linspace(x_min, x_max, resolution)
+    y_grid = np.linspace(y_min, y_max, resolution)
+    X, Y = np.meshgrid(x_grid, y_grid)
+    
+    positions = np.vstack([X.ravel(), Y.ravel()])
+    
+    # Calculate kernel density estimation
+    try:
+        values = np.vstack([x_coords, y_coords])
+        kernel = gaussian_kde(values, bw_method=bandwidth)
+        Z = np.reshape(kernel(positions), X.shape)
+        
+        # Plot the heatmap
+        plt.imshow(Z, 
+                   extent=[x_min, x_max, y_max, y_min],  # Invert y-axis for image coordinates
+                   cmap=colormap,
+                   alpha=alpha,
+                   interpolation='gaussian')
+        
+        # Add colorbar
+        cbar = plt.colorbar()
+        cbar.set_label('Density')
+        
+        # Overlay scatter plot of the actual points if requested
+        if overlay:
+            plt.scatter(x_coords, y_coords, c='black', s=5, alpha=0.3)
+        
+        plt.title(f'Heatmap of Class {class_index} Bounding Box Centers')
+        plt.xlabel('X Coordinate')
+        plt.ylabel('Y Coordinate')
+        plt.xlim(x_min, x_max)
+        plt.ylim(y_max, y_min)  # Invert y-axis for image coordinates
+        
+        # Save the heatmap
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        print(f"Heatmap saved to {output_path}")
+        
+    except np.linalg.LinAlgError as e:
+        print(f"Error generating kernel density estimate: {e}")
+        print("Try using more data points or adjusting the bandwidth parameter.")
+        
+        # Fallback to a 2D histogram if KDE fails
+        print("Falling back to histogram-based heatmap...")
+        plt.hist2d(x_coords, y_coords, bins=(50, 50), cmap=colormap, norm=colors.LogNorm())
+        plt.colorbar(label='Count')
+        plt.title(f'Histogram of Class {class_index} Bounding Box Centers')
+        plt.xlabel('X Coordinate')
+        plt.ylabel('Y Coordinate')
+        plt.gca().invert_yaxis()  # Invert y-axis for image coordinates
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        print(f"Histogram-based heatmap saved to {output_path}")
 
 def main():
     """
@@ -76,7 +129,11 @@ def main():
     parser.add_argument("--image_width", type=int, default=640, help="Width of the image (default: 640).")
     parser.add_argument("--image_height", type=int, default=640, help="Height of the image (default: 640).")
     parser.add_argument("--class_index", type=int, default=4, help="Class index to visualize (default: 4).")
-    parser.add_argument("--dot_size", type=int, default=10, help="Size of the dots in the heatmap (default: 10).")
+    parser.add_argument("--bandwidth", type=float, default=0.05, help="Bandwidth for kernel density estimation (default: 0.05).")
+    parser.add_argument("--resolution", type=int, default=100, help="Resolution of the heatmap grid (default: 100).")
+    parser.add_argument("--colormap", type=str, default='hot_r', help="Matplotlib colormap (default: 'hot_r').")
+    parser.add_argument("--alpha", type=float, default=0.7, help="Transparency of the heatmap (default: 0.7).")
+    parser.add_argument("--overlay", action='store_true', help="Overlay points on the heatmap.")
 
     args = parser.parse_args()
 
@@ -84,11 +141,23 @@ def main():
     if not os.path.isdir(args.label_dir):
         print(f"Error: Label directory '{args.label_dir}' does not exist.")
         return
+    
     if not args.output_path.lower().endswith(('.png', '.jpg', '.jpeg')):
         print("Error: Output path must be a valid image file name (.png, .jpg, .jpeg).")
         return
 
-    generate_heatmap(args.label_dir, args.output_path, args.image_width, args.image_height, args.class_index, args.dot_size)
+    generate_heatmap(
+        args.label_dir, 
+        args.output_path, 
+        args.image_width, 
+        args.image_height, 
+        args.class_index,
+        args.bandwidth,
+        args.resolution,
+        args.colormap,
+        args.alpha,
+        args.overlay
+    )
 
 if __name__ == "__main__":
     main()
