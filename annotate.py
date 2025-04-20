@@ -151,7 +151,10 @@ def get_bounding_box_old(img_path, scale=0.5):
 def main(cfg, folder, scale, draw_circles, dart_score=True):
     global xy, img_copy
     img_dir = osp.join('dataset/images', folder)
-    imgs = sorted(os.listdir(img_dir))
+    files = os.listdir(img_dir)
+    valid_extensions = ['.jpg', '.jpeg', '.png']
+    files = [name for name in files if name.lower().endswith(tuple(valid_extensions))]
+    imgs = sorted(files)
     annot_path = osp.join('dataset/annotations', folder + '.pkl')
     if osp.isfile(annot_path):
         annot = pd.read_pickle(annot_path)
@@ -187,7 +190,17 @@ def main(cfg, folder, scale, draw_circles, dart_score=True):
             bbox, xy = a['bbox'], a['xy']
 
         crop, _ = crop_board(osp.join(img_dir, a['img_name']), bbox=bbox)
-        crop = cv2.resize(crop, (int(crop.shape[1] * scale), int(crop.shape[0] * scale)))
+        try: 
+            crop = cv2.resize(crop, (int(crop.shape[1] * scale), int(crop.shape[0] * scale)))
+        except Exception:
+            bbox = get_bounding_box(osp.join(img_dir, a['img_name']))
+            crop, _ = crop_board(osp.join(img_dir, a['img_name']), bbox=bbox)
+            try:
+                crop = cv2.resize(crop, (int(crop.shape[1] * scale), int(crop.shape[0] * scale)))
+            except Exception:
+                print('Error resizing image, skipping img:' + a['img_name'])
+                i += 1
+                continue
         cv2.putText(crop, '{}/{} {}'.format(i+1, len(annot), a['img_name']), (0, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
         img_copy = crop.copy()
 
