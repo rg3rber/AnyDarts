@@ -242,21 +242,15 @@ $RECYCLE.BIN/
 # exclude runs and tests
 wandb/
 runs/detect/
-testing/predictions/
 testing/test_predictions/**/*.jpg
 testing/test_predictions/**/*.jpeg
 uploads/
 
-# exclude datasets but include labels
-dataset/holo_v1/
-dataset/holo_v2/
-dataset/cropped_images/
-dataset/images/
-dataset/annotations/labels
-data/
+# exclude dataset
+dataset/
+data/*
 gray_v2/
 dataset/to_augment/
-dataset/to_check/
 dataset/augmented/
 dataset/check_labels_from_yolo_ds/
 dataset/checking_labels/
