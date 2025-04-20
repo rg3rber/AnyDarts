@@ -4,6 +4,7 @@ model:
   name: any_v3
   input_size: 800
   weights: ../training/yolo11s.pt
+  trained_weights: ../models/anydarts_best.pt # best model: first_run/mosaic_v22/weights/best.pt
   max_darts: 3
   bbox_size: 0.025  # fraction of input size
   all_models:

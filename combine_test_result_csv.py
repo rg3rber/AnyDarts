@@ -7,10 +7,10 @@ from yacs.config import CfgNode
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='holo_v2') # cfg file
+    parser.add_argument('-c', '--cfg', default='any_v3') # cfg file
     parser.add_argument('-a', '--all-models', action='store_true') # run all models
-    parser.add_argument('-p', '--project', default='run2') # training config
-    parser.add_argument('-e', '--experiment', default='train2') # experiment name
+    parser.add_argument('-p', '--project', default='first_run') # training config
+    parser.add_argument('-e', '--experiment', default='mosaic_v22') # experiment name
 
     args = parser.parse_args()
 

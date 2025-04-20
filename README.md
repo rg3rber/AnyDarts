@@ -10,7 +10,7 @@ Using training/run2_train_cfg.yaml and default Yolo Augmentations:
 - check why images: d1_02_04_2020_IMG_1092.JPG and d1_02_04_2020_IMG_1093.JPG are corrupt / out of bounds labels
 - dont use optimizer=auto but set it to Adam
 
-## Dataset holo_v1
+## Dataset any_v1
 
 ### train: 891 imgs
 - D1: 98 

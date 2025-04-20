@@ -1,28 +1,29 @@
-# Global HoloDarts Config
+# Global AnyDarts Config
 
 model:
-  name: holo_v2
+  name: any_v1
   input_size: 800
   weights: ../training/yolo11s.pt
-  trained_weights: ../run2/train2/weights/best.pt
   max_darts: 3
   bbox_size: 0.025  # fraction of input size
   all_models:
-    - [first_run, train] # on holo_v1 dataset
-    - [first_run, train-augmix] # on holo_v1 dataset
-    - [first_run, train-auto] # on holo_v1 dataset
-    - [first_run, mosaic_v1] # on holo_v1 dataset
-    - [first_run, mosaic_v22] # on holo_v2 dataset
-    - [run2, train]
-    - [run2, train2] # holo_v1
-    - [run3, train] # holo_v1
-    - [run3, train-640] # holo_v1
-    - [run4, train] # holo_v2
-    - [run4, train2] # holo_v2
+    - [first_run, train] # on any_v1 dataset
+    - [first_run, train-augmix] # on any_v1 dataset
+    - [first_run, train-auto] # on any_v1 dataset
+    - [first_run, mosaic_v1] # on any_v1 dataset
+    - [first_run, mosaic_v22] # on any_v2 dataset
+    - [first_run, finetune_holo_v3] # finetune on my images only dataset
+    - [first_run, finetune_holo_v3_2] # finetune on my images only dataset
+    - [run2, train2] # any_v1
+    - [run3, train] # any_v1
+    - [run3, train-640] # any_v1
+    - [run4, train2] # any_v2
     - [run_gray, train2] # on gray dataset
-    - [run_11n, train2] # holo_v2
-    - [run_11m, default] # holo_v2
-    - [run_v3, train] # on holo_v3 datasest
+    - [run_11n, train2] # any_v2
+    - [run_11m, default] # any_v2
+    - [run_11m, mosaic_v2] # with mosaic on any_v2
+    - [run_v3, train] # on any_v3 datasest
+    - [custom_aug, train5000] # pre augmented any_v2
 
 board:
   r_board: 0.2255  # radius of full board

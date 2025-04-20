@@ -1,4 +1,4 @@
-name: holodarts
+name: anydarts
 channels:
   - conda-forge
   - defaults

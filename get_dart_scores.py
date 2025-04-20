@@ -24,7 +24,7 @@ def crop(img, boardbbox, cfg):
     crop = cv2.resize(crop, (size, size))
     return crop
 
-def get_dart_scores(img, cfgFile="holodarts", debug=False):
+def get_dart_scores(img, cfgFile="any_v3", debug=False):
     """
     img: original image or path to image to run inference on
     returns: scores of the darts in the image
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Board detection using ellipse fitting.')
     parser.add_argument('-i', '--input', help='Image name inside dataset/images', 
                        default='dataset/images/new-test.jpg')
-    parser.add_argument('-c', '--cfg', help='Config file name', default='holo_v1')
+    parser.add_argument('-c', '--cfg', help='Config file name', default='any_v1')
     args = parser.parse_args()
 
     img = args.input
