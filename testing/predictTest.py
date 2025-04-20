@@ -15,10 +15,13 @@ import pandas as pd
 def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False, log_dir='testing', test_img_folder='test'):
     if osp.isdir(path):
         images = os.listdir(path)
+        valid_extensions = ('.jpg', '.jpeg', '.png')  # extend as needed
+        images = [name for name in images if name.lower().endswith(valid_extensions)]
         img_paths = [osp.join(path, name) for name in images]
     else:
         test = False
         img_paths = [path]
+
 
     if test:
         write_dir = osp.join('testing/test_predictions', log_dir, cfg.model.name, test_img_folder)
