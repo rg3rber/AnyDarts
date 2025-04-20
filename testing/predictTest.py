@@ -139,9 +139,10 @@ def batch_inference(model, path, cfg, test=False, write=False, fail_cases=False,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='holo_v1') # dataset config
-    parser.add_argument('-p', '--project', default='run2') # training config
-    parser.add_argument('-e', '--experiment', default='train') # experiment name
+    parser.add_argument('-c', '--cfg', default='any_v2') # dataset config
+    parser.add_argument('-a', '--all-models', action='store_true') # run all models
+    parser.add_argument('-p', '--project', default='run_gray') # training config
+    parser.add_argument('-e', '--experiment', default='train2') # experiment name
 
     args = parser.parse_args()
 

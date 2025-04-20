@@ -7,7 +7,7 @@ import os.path as osp
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='holo_v1')
+    parser.add_argument('-c', '--cfg', default='any_v1')
     args = parser.parse_args()
 
     data_path = osp.join('dataset', args.cfg, 'data.yaml')

@@ -64,9 +64,9 @@ def convert_annotations(pkl_path: str, output_dir: str, bbox_size: float) -> Non
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-lp', '--labels-path', default='dataset/labels.pkl')
-    parser.add_argument('-o', '--output-path', default='dataset/annotations/labels')
-    parser.add_argument('-c', '--config', default='configs/holo_v2.yaml')
+    parser.add_argument('-lp', '--labels-path', default='labels.pkl')
+    parser.add_argument('-o', '--output-path', default='images/labels')
+    parser.add_argument('-c', '--config', default='configs/any_v2.yaml')
 
     args = parser.parse_args()
 

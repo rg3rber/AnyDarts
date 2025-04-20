@@ -273,6 +273,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     cfg = CN(new_allowed=True)
-    cfg.merge_from_file('configs/holo_v2.yaml')
+    cfg.merge_from_file('configs/any_v2.yaml')
 
     main(cfg, args.img_folder, args.scale, args.draw_circles)

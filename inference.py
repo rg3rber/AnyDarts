@@ -41,9 +41,9 @@ def inference(model, img_board, cfg, img_name=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--cfg', default='holo_v1')
+    parser.add_argument('-c', '--cfg', default='any_v1')
     parser.add_argument('-m', '--model', default='first_run/train/weights/best.pt')
-    parser.add_argument('-i', '--image', default='dataset/holo_v1/test/images/d1_03_27_2020_IMG_6135.JPG')
+    parser.add_argument('-i', '--image', default='dataset/any_v1/test/images/d1_03_27_2020_IMG_6135.JPG')
     args = parser.parse_args()
 
     model = YOLO(args.model)
