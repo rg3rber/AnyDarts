@@ -1,28 +1,19 @@
 # AnyDarts
 
-The APK, model weights and datasets are available here: [AnyDarts Google Drive Shared Folder](https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link)
+The Android APK, model weights and datasets are available here: [AnyDarts Google Drive Shared Folder](https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link)
 
-
-
-# DeepDarts
-
-Code for the CVSports 2021 paper: [DeepDarts: Modeling Keypoints as Objects for Automatic Scorekeeping in Darts using a Single Camera](https://arxiv.org/abs/2105.09880)
 
 ## Prerequisites
-Python 3.5-3.8, CUDA >= 10.1, cuDNN >= 7.6
+Python >=3.12
 
 ## Setup
-1. [Install Anaconda or Miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html)
-2. Create a new conda environment with Python 3.7: ```$ conda create -n deep-darts python==3.7```. Activate the environment: ```$ conda activate deep-darts```
-4. Clone this repo: ```$ git clone https://github.com/wmcnally/deep-darts.git```
-5. Go into the directory and install the dependencies: ```$ cd deep-darts && pip install -r requirements.txt```
-6. Download ```images.zip``` from [IEEE Dataport](https://ieee-dataport.org/open-access/deepdarts-dataset) 
-   and extract in the ```dataset``` directory. Crop the images: ```$ python crop_images.py --size 800```. This step could
-   take a while. Alternatively, you can download the 800x800 cropped images directly from IEEE Dataport. 
-   If you choose this option, extract ```cropped_images.zip``` in the ```dataset``` directory.
-8. Download ```models.zip``` from IEEE Dataport and extract in the main directory.
+1. [Install Anaconda or Miniforge](https://github.com/conda-forge/miniforge)
+2. Clone this repo: ```$ git clone https://github.com/rg3rber/AnyDarts.git```
+3. Create a new conda environment from the environment.yaml file: ```conda env create -f environment.yml```
+4. Activate the conda environment: ```conda activate anydarts```
+5. Download the datasets and weights from [AnyDarts Google Drive Shared Folder](https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link)
 
-## Pipeline
+## Pipeline to increase datasets
 
 1. Take photos
 2. Save in session folder to dataset/images
@@ -36,20 +27,9 @@ Python 3.5-3.8, CUDA >= 10.1, cuDNN >= 7.6
 
 !- DO NOT RENAME IMAGES AFTER
 
-
 ## Sample Test Predictions
 
-Dataset 1:\
-![alt text](./d1_pred.JPG)
 
-Dataset 2:\
-![alt text](./d2_pred.JPG)
-
-# Notes
-
-Latest image id: 1055 (791 in d3_26_12_2024_random)
-
-Latest test image id: 1459
 
 ## Dataset holo_v1
 
@@ -78,18 +58,19 @@ train: additional 203 => 1092 imgs
 
 val: additional 70 => 214
 
-test: 
-   1. full game: 119
-   2. full game 3 darts only: 19
-   3. front facing 3 darts hard: 28
-   4. taken on samsung: 21
-   5. zoomed: 15
-   6. different darts: 46
-   7. easy one dart: 43 (each field once)
-   8. testing occlusions + angles: 30
-   9. occlusion only: 21
-   10. precision test: 20 (right on section borders)
-   11. test rim: 15 (took away black tape covering board ads)
+- **Front facing 3 darts hard:** 21 challenging front-facing images with 3 darts.
+- **Occlusion only:** 11 images focusing solely on dart occlusions.
+- **Test v1:** The 67 images from the AnyDarts_v1 dataset.
+- **Testing occlusion angles:** 30 images taken on repeated setups from different angles introducing and removing occlusions to compare different angles.
+- **Precision test:** 20 images with darts placed exactly on segment borders to test detection and scoring precision.
+- **Full game:** 102 images covering full two-player gameplay.
+- **Easy one dart:** 43 simpler images, with one dart in each field (once per field).
+- **Test generalization:** 13 images of various boards, including unseen ones.
+- **Test rim:** 15 images without the black tape normally used to cover board ads, revealing the full rim.
+- **Full game 3 darts only:** 19 images showing only the 3-dart portion of full games.
+- **Taken on Samsung:** 20 images captured using a Samsung Galaxy S9+ camera.
+- **DeepDarts D2:** The 150 images making up the DeepDarts *D2* test set.
+- **Different darts:** 25 images using dart types and colors differing from the main blue set, of which one example is depicted in *Figure X* in *Chapter Y*.
 
-=> totals: 377
+=> totals: 536 (might include duplicates) 
   
