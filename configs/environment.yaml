@@ -17,4 +17,3 @@ dependencies:
       - matplotlib
       - Flask
       - flask-cors
-#prefix: C:\Users\rgerb\miniforge3\envs\deep-darts
