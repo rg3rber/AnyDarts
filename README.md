@@ -7,7 +7,7 @@ The Android APK, model weights and datasets are available here: [AnyDarts Google
 Python >=3.12
 
 ## Setup
-1. [Install Anaconda or Miniforge](https://github.com/conda-forge/miniforge)
+1. [Install Miniforge (or another conda distribution)](https://github.com/conda-forge/miniforge)
 2. Clone this repo: ```$ git clone https://github.com/rg3rber/AnyDarts.git```
 3. Create a new conda environment from the environment.yaml file: ```conda env create -f environment.yml```
 4. Activate the conda environment: ```conda activate anydarts```
