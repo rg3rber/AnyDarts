@@ -57,10 +57,11 @@ Located at: https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F
 - D1: 98 
 - D2: 150 
 - D3: 643
-! 2 deepdarts d1 training images had corrupt labels: 
-train: Scanning /local/home/rgerber/HoloDarts/dataset/holo_v1/train/labels.cache... 891 images, 0 backgrounds, 2 corrupt: 100%|████████
-train: WARNING ⚠️ /local/home/rgerber/HoloDarts/dataset/holo_v1/train/images/d1_02_04_2020_IMG_1092.JPG: ignoring corrupt image/label: non-normalized or out of bounds coordinates [1.0023872]
-train: WARNING ⚠️ /local/home/rgerber/HoloDarts/dataset/holo_v1/train/images/d1_02_04_2020_IMG_1093.JPG: ignoring corrupt image/label: non-normalized or out of bounds coordinates [1.0023872]
+! 2 deepdarts d1 training images had corrupt labels:
+
+train: Scanning /local/home/AnyDarts/dataset/any_v1/train/labels.cache... 891 images, 0 backgrounds, 2 corrupt: 100%|████████
+train: WARNING ⚠️ /local/home/AnyDarts/dataset/any_v1/train/images/d1_02_04_2020_IMG_1092.JPG: ignoring corrupt image/label: non-normalized or out of bounds coordinates [1.0023872]
+train: WARNING ⚠️ /local/home/AnyDarts/dataset/any_v1/train/images/d1_02_04_2020_IMG_1093.JPG: ignoring corrupt image/label: non-normalized or out of bounds coordinates [1.0023872]
 
   ### val: 144 imgs
   - D1: 15
