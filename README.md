@@ -1,6 +1,7 @@
 # AnyDarts
 
 The Android APK, model weights and datasets are available here: [AnyDarts Google Drive Shared Folder](https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link)
+The Android Project repository can be found here: [AnyDarts Android](https://github.com/rg3rber/AnyDarts-Android)
 
 
 ## Prerequisites
