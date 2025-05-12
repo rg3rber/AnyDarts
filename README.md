@@ -12,7 +12,7 @@ Python >=3.12
 ## Setup
 1. [Install Miniforge (or another conda distribution)](https://github.com/conda-forge/miniforge)
 2. Clone this repo: ```$ git clone https://github.com/rg3rber/AnyDarts.git```
-3. Create a new conda environment from the environment.yaml file: ```conda env create -f environment.yml```
+3. Create a new conda environment from the environment.yaml file inside configs: ```conda env create -f environment.yml```
 4. Activate the conda environment: ```conda activate anydarts```
 5. Download the datasets and weights from [AnyDarts Google Drive Shared Folder](https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link)
 
@@ -45,6 +45,29 @@ Python >=3.12
 <img src="https://github.com/user-attachments/assets/1d83cde3-683a-416a-ac99-a6ff43d3cb83" alt="thesis-board-pred" width="400"/>
 
 <img src="https://github.com/user-attachments/assets/e9e0976d-9215-4c22-8213-aaa43acc3a90" alt="generalization-board-pred" width="400"/>
+
+# Repository Structure
+
+## `main` Branch
+This branch contains the finalized configurations and core methods used in the project. It represents the most stable and production-ready state of the codebase.
+
+## `annotating` Branch
+Used to run the annotations on a seperate branch
+
+## `custom_aug` Branch
+Was used to precompute custom augmentations
+
+## `first-train` Branch
+The results of the very first training run.
+
+## `run-gray` Branch
+Used to do a training run on grayscale images
+
+## `testing` Branch
+Contains artifacts and failed attempts for reference
+
+## `training-runs` Branch
+This is the branch containing the results and configuration of the ablation study. It was used for experimenting with different training configurations and testing various model setups. 
 
 
 # Datasets 
