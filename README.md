@@ -36,7 +36,7 @@ Python >=3.12
 
 ## Scoring Pipeline
 
-<img src="https://github.com/user-attachments/assets/01c92796-66b0-4c30-94c6-1302c631391d" alt="scoring-pipeline" width="400"/>
+<img src="https://github.com/user-attachments/assets/01c92796-66b0-4c30-94c6-1302c631391d" alt="scoring-pipeline" width="800"/>
 
 ## Scoring Results examples
 
