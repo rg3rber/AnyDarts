@@ -46,7 +46,11 @@ Python >=3.12
 ![20250407-194608_dartboard_image_pred](https://github.com/user-attachments/assets/1d83cde3-683a-416a-ac99-a6ff43d3cb83)
 
 
-## Dataset holo_v1
+# Datasets 
+
+Located at: https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link
+
+## AnyDarts_v1
 
 ### train: 889 (891 initial) imgs
 - D1: 98 
@@ -67,11 +71,13 @@ train: WARNING ⚠️ /local/home/rgerber/HoloDarts/dataset/holo_v1/train/images
 - D2: 24
 - D3: 31
 
-## holo_v2:
+## AnyDarts_v2:
 
 train: additional 203 => 1092 imgs
 
 val: additional 70 => 214
+
+## Test suite Dataset:
 
 - **Front facing 3 darts hard:** 21 challenging front-facing images with 3 darts.
 - **Occlusion only:** 11 images focusing solely on dart occlusions.
