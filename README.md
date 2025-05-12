@@ -32,18 +32,19 @@ Python >=3.12
 
 ## Board Detection
 
-![board-bbox](https://github.com/user-attachments/assets/dc2f8158-d366-4948-87ad-4460a0d0438b)
+<img src="https://github.com/user-attachments/assets/dc2f8158-d366-4948-87ad-4460a0d0438b" alt="Description" width="400"/>
 
 ## Scoring Pipeline
 
-![scoring-pipeline](https://github.com/user-attachments/assets/01c92796-66b0-4c30-94c6-1302c631391d)
+<img src="https://github.com/user-attachments/assets/01c92796-66b0-4c30-94c6-1302c631391d" alt="scoring-pipeline" width="400"/>
 
 ## Scoring Results examples
 
 
-![IMG_1434_d3_15_02_2025_test_generalization_pred](https://github.com/user-attachments/assets/e9e0976d-9215-4c22-8213-aaa43acc3a90)
 
-![20250407-194608_dartboard_image_pred](https://github.com/user-attachments/assets/1d83cde3-683a-416a-ac99-a6ff43d3cb83)
+<img src="https://github.com/user-attachments/assets/1d83cde3-683a-416a-ac99-a6ff43d3cb83" alt="thesis-board-pred" width="400"/>
+
+<img src="https://github.com/user-attachments/assets/e9e0976d-9215-4c22-8213-aaa43acc3a90" alt="generalization-board-pred" width="400"/>
 
 
 # Datasets 
