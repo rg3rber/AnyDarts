@@ -3,6 +3,7 @@
 
 - The model weights and datasets are available here: [AnyDarts Google Drive Shared Folder](https://drive.google.com/drive/folders/1og8SZbe6Yn7kWXbzq2ANEtsk-o_F5Cou?usp=drive_link)
 - The Android Project repository and the APK can be found here: [AnyDarts Android](https://github.com/rg3rber/AnyDarts-Android)
+- The related repository and heavily influencing this project: [DeepDarts Repository](https://github.com/wmcnally/deep-darts)
 
 
 ## Prerequisites
@@ -29,8 +30,13 @@ Python >=3.12
 
 !- DO NOT RENAME IMAGES AFTER
 
-## Sample Test Predictions
+## Scoring Pipeline
 
+![scoring-pipeline](https://github.com/user-attachments/assets/01c92796-66b0-4c30-94c6-1302c631391d)
+
+## Scoring Results examples
+
+![IMG_1378_d3_14_02_2025_test_occlusion_pred](https://github.com/user-attachments/assets/d8aa4d59-e9b3-49e8-a843-1b3f99cdf369)
 
 
 ## Dataset holo_v1
