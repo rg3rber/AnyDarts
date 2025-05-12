@@ -92,7 +92,7 @@ val: additional 70 => 214
 - **Full game 3 darts only:** 19 images showing only the 3-dart portion of full games.
 - **Taken on Samsung:** 20 images captured using a Samsung Galaxy S9+ camera.
 - **DeepDarts D2:** The 150 images making up the DeepDarts *D2* test set.
-- **Different darts:** 25 images using dart types and colors differing from the main blue set, of which one example is depicted in *Figure X* in *Chapter Y*.
+- **Different darts:** 25 images using dart types and colors differing from the main blue set.
 
 => totals: 536 (might include duplicates) 
   
