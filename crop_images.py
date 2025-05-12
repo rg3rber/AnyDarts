@@ -6,6 +6,8 @@ import os.path as osp
 import cv2
 import pandas as pd
 
+""" Copied and slightly modified from DeepDarts """
+
 def crop(img_path, write_path, bbox, size=480, overwrite=False):
     if osp.exists(write_path) and not overwrite:
         print(write_path, 'already exists')

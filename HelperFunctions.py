@@ -3,7 +3,8 @@ import os
 import cv2
 import numpy as np
 
-""" converts array of bounding boxes [x_center, y_center, width, height, class] to xy [x, y, visible]
+""" Taken from DeepDarts
+converts array of bounding boxes [x_center, y_center, width, height, class] to xy [x, y, visible]
  with index = class label"""
 def bboxes_to_xy(bboxes, max_darts=3):
     xy = np.zeros((4+max_darts, 3), dtype=np.float32)
@@ -29,6 +30,27 @@ def bboxes_to_xy(bboxes, max_darts=3):
     return xy, hadToEstimate
 
 def est_cal_pts(xy):
+    """
+    Taken from DeepDarts
+    
+    Estimate missing calibration points in a set of 4 points.
+
+    Given an array `xy` of shape (4, 3), where each row represents a calibration point
+    with (x, y, flag), this function estimates the coordinates of a single missing point
+    (flag == 0) by assuming symmetry with respect to the center of the remaining points.
+    If more than one point is missing, a warning is printed and no estimation is performed.
+
+    Parameters
+    ----------
+    xy : np.ndarray
+        A (4, 3) array where each row is [x, y, flag], and flag is 1 if the point is present,
+        0 if missing.
+
+    Returns
+    -------
+    np.ndarray
+        The input array with the missing point estimated if only one is missing.
+    """
     missing_idx = np.where(xy[:4, -1] == 0)[0]
     if len(missing_idx) == 1:
         if missing_idx[0] <= 1:
@@ -56,11 +78,26 @@ def est_cal_pts(xy):
                 xy[3, 2] = 1
             xy[:, :2] += center
     else:
-        # TODO: if len(missing_idx) > 1
         print('Missed more than 1 calibration point')
     return xy
 
 def get_circle(xy):
+    """
+    Taken from DeepDarts
+
+    Calculates the center and radius of a circle defined by the first four points in the input array.
+
+    Parameters:
+        xy (np.ndarray): An array of shape (N, 2) or (N, D) containing at least four points.
+
+    Returns:
+        tuple:
+            - c (np.ndarray or None): The center of the circle as a 1D array, or None if calculation fails.
+            - r (float or None): The radius of the circle, or None if calculation fails.
+
+    Notes:
+        - Returns (None, None) if the center or radius cannot be computed (e.g., due to NaN values).
+    """
     c = np.mean(xy[:4], axis=0)
     if np.isnan(c).any():  # Check for NaN values
         return None, None
@@ -71,6 +108,10 @@ def get_circle(xy):
 
 
 def board_radii(r_d, cfg):
+    """
+    Taken from DeepDarts
+    
+    Compute dartboard radii and ring widths in pixels from config and double ring radius."""
     r_t = r_d * (cfg.board.r_treble / cfg.board.r_double)  # treble radius, in px
     r_ib = r_d * (cfg.board.r_inner_bull / cfg.board.r_double)  # inner bull radius, in px
     r_ob = r_d * (cfg.board.r_outer_bull / cfg.board.r_double) # outer bull radius, in px
@@ -79,6 +120,21 @@ def board_radii(r_d, cfg):
 
 
 def draw_circles(img, xy, cfg, color=(255, 255, 255)):
+    """
+    Taken from DeepDarts
+
+    Draws concentric circles on the given image at the specified coordinates, using board configuration parameters.
+
+    Args:
+        img (numpy.ndarray): The image on which to draw the circles.
+        xy (tuple): Coordinates for the center of the circles.
+        cfg (object): Board configuration object containing radii and width parameters.
+        color (tuple, optional): Color of the circles in BGR format. Defaults to (255, 255, 255).
+
+    Returns:
+        numpy.ndarray: The image with circles drawn, or the original image if input is invalid.
+
+    """
     c, r_d = get_circle(xy)  # double radius
     if c is None or r_d is None:  # Skip drawing if invalid values
         return img
@@ -88,7 +144,25 @@ def draw_circles(img, xy, cfg, color=(255, 255, 255)):
         cv2.circle(img, center, int(r), color)
     return img
 
+
 def transform(xy, img=None, angle=9, M=None):
+    """
+    Taken from DeepDarts
+
+    Applies a perspective transformation to a set of 2D points and optionally an image.
+
+    Parameters:
+        xy (np.ndarray): Array of shape (N, 2) or (N, 3) containing 2D points. If shape is (N, 3), the third column is treated as visibility.
+        img (np.ndarray, optional): Image to be warped using the same transformation. Default is None.
+        angle (float, optional): Angle in degrees used to compute the destination points for the perspective transform. Default is 9.
+        M (np.ndarray, optional): Precomputed 3x3 perspective transformation matrix. If None, it is computed from the first 4 points in `xy`. Default is None.
+
+    Returns:
+        tuple:
+            - xy_dst (np.ndarray): Transformed points, same shape as input `xy`.
+            - img (np.ndarray or None): Warped image if `img` was provided, otherwise None.
+            - M (np.ndarray): The 3x3 perspective transformation matrix used.
+    """
     if xy.shape[-1] == 3:
         has_vis = True
         vis = xy[:, 2:]
@@ -131,6 +205,21 @@ def transform(xy, img=None, angle=9, M=None):
 
 # get_dart_scores: returns the score of each dart throw based on the xy pixel coordinates of the darts
 def get_dart_scores(xy, cfg, numeric=False):
+    """
+    Taken from DeepDarts
+
+    Calculate dart scores based on detected dart positions and board configuration.
+
+    Args:
+        xy (np.ndarray): Array of shape (N, 2) containing (x, y) coordinates. The first 4 points are calibration points, and the rest are dart positions.
+        cfg (object): Configuration object containing board parameters and BOARD_DICT mapping sector indices to numbers.
+        numeric (bool, optional): If True, returns scores as integers; otherwise, returns string representations. Defaults to False.
+
+    Returns:
+        list: List of scores for each detected dart. Each score is either a string (e.g., '20', 'D20', 'T20', 'B', 'DB', '0') or an integer (if numeric=True).
+              Returns an empty list if calibration points are missing or invalid.
+
+    """
     valid_cal_pts = xy[:4][(xy[:4, 0] > 0) & (xy[:4, 1] > 0)]
     if xy.shape[0] <= 4 or valid_cal_pts.shape[0] < 4:  # missing calibration point
         return []
@@ -175,6 +264,8 @@ def get_dart_scores(xy, cfg, numeric=False):
 
 def draw(img, xy, cfg, circles, score, color=(255, 255, 0)):
     """
+    Taken from DeepDarts
+
     img: image to draw on
     xy: array of x and y coordinates for calibration points (first 4) and darts (up to last 3)
     """
@@ -218,6 +309,16 @@ def draw(img, xy, cfg, circles, score, color=(255, 255, 0)):
     return img
 
 def total_score(scores):
+    """
+    Taken from DeepDarts
+
+    Calculates the total score from a list of dart scores.
+    Args:
+        scores (list): List of scores as integers or strings.
+
+    Returns:
+        int: The total calculated score.
+    """
 
     if len(scores) == 0:
         return 0

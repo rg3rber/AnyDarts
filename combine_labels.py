@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+# modified version from https://github.com/MikeMcGarry/deep-darts
 def is_pkl_file(file):
     return file.endswith('.pkl')
 

@@ -7,6 +7,8 @@ import argparse
 from pathlib import Path
 from tqdm import tqdm
 
+"""Generate precomputed augmentations for a YOLO dataset."""
+
 def parse_yolo_labels(label_path):
     """Parse YOLO format labels from a file."""
     with open(label_path, 'r') as f:

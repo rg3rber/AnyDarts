@@ -5,6 +5,8 @@ from PIL import Image
 from io import BytesIO
 import numpy as np
 
+""" Simplified Flask server for hosted image upload and processing """
+
 app = Flask(__name__)
 from DartsPrediction import score
 

@@ -8,6 +8,7 @@ import argparse
 from BoardDetection import find_board
 from HelperFunctions import get_dart_scores, get_circle, board_radii, draw, draw_circles
 
+""" Copied and slighlty modified from https://github.com/MikeMcGarry/deep-darts """
 def crop_board(img_path, bbox=None, crop_info=(0, 0, 0), crop_pad=1.1):
     img = cv2.imread(img_path)
     if bbox is None:

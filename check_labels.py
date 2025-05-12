@@ -5,6 +5,8 @@ from HelperFunctions import draw, bboxes_to_xy
 import numpy as np
 from yacs.config import CfgNode
 
+"""Used to inspect the labels of a dataset in YOLO format. 
+It draws the labels on the images and saves them to a new directory."""
 def draw_labels(cfg, dataset_path, output_path):
 
     bbox_size = cfg.model.bbox_size

@@ -28,7 +28,7 @@ def find_board(image):
     h, w = img.shape[:2]
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-    """approach 2: (hardcoded color ranges)"""
+    # Define the lower and upper bounds for red and green colors in HSV
     lower_red1 = np.array([0, 120, 70])
     upper_red1 = np.array([10, 255, 255])
     lower_red2 = np.array([170, 120, 70])
@@ -43,9 +43,6 @@ def find_board(image):
     red_mask = cv2.bitwise_or(red_mask1, red_mask2)
     final_mask = cv2.bitwise_or(red_mask, green_mask)
     binary = otsu_thresholding(final_mask)
-
-    red_binary = otsu_thresholding(red_mask)
-    green_binary = otsu_thresholding(green_mask) #comparing red vs green
 
     resizeMasked, scale_factor_ellipse = proportionalResize(binary, 1000)
 
@@ -90,8 +87,11 @@ def proportionalResize(image, target_size, inter=cv2.INTER_AREA):
         return cv2.resize(image, (0, 0), fx=r, fy=r), r
     return image, 1
 
+
 def alternatefindEllipse(img, original_img=None, scale_factor=1):
     """
+    Kept for reference
+    
     input: binary image
     output: params of roated rectangle around ellipse
     center point, axes (b=minor, a=major), angle
