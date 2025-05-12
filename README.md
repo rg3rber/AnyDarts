@@ -48,26 +48,26 @@ Python >=3.12
 
 # Repository Structure
 
-## `main` Branch
-This branch contains the finalized configurations and core methods used in the project. It represents the most stable and production-ready state of the codebase.
+- **`main`**  
+  Contains the finalized configurations and core methods used in the project. Represents the most stable and production-ready state of the codebase.
 
-## `annotating` Branch
-Used to run the annotations on a seperate branch
+- **`annotating`**  
+  Used to run the annotations on a separate branch.
 
-## `custom_aug` Branch
-Was used to precompute custom augmentations
+- **`custom_aug`**  
+  Used to precompute custom augmentations.
 
-## `first-train` Branch
-The results of the very first training run.
+- **`first-train`**  
+  Contains the results of the very first training run.
 
-## `run-gray` Branch
-Used to do a training run on grayscale images
+- **`run-gray`**  
+  Used to perform a training run on grayscale images.
 
-## `testing` Branch
-Contains artifacts and failed attempts for reference
+- **`testing`**  
+  Contains artifacts and failed attempts kept for reference.
 
-## `training-runs` Branch
-This is the branch containing the results and configuration of the ablation study. It was used for experimenting with different training configurations and testing various model setups. 
+- **`training-runs`**  
+  Includes the results and configuration of the ablation study. Used for experimenting with different training setups.
 
 
 # Datasets 
