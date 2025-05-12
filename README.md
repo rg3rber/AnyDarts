@@ -1,4 +1,11 @@
-# Second run: 
+# This branch contains the majority of results of the training runs
+
+- Each run is structured in a project name and an experiment name.
+- Inside each run the args.yaml file lists the precise parameters used for the run.
+- With predictTest.py one or all models can be tested against the test set which is located inside the any_v2 dataset. Each test folder has to start with "test_"
+
+
+# Run2: 
 
 Using training/run2_train_cfg.yaml and default Yolo Augmentations: 
 
