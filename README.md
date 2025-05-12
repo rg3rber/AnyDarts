@@ -67,7 +67,8 @@ Python >=3.12
   Contains artifacts and failed attempts kept for reference.
 
 - **`training-runs`**  
-  Includes the results and configuration of the ablation study. Used for experimenting with different training setups.
+This is the branch containing the results and configuration of the ablation study. It was used for experimenting with different training configurations and testing various model setups. 
+
 
 
 # Datasets 
