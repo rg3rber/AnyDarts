@@ -30,13 +30,20 @@ Python >=3.12
 
 !- DO NOT RENAME IMAGES AFTER
 
+## Board Detection
+
+![board-bbox](https://github.com/user-attachments/assets/dc2f8158-d366-4948-87ad-4460a0d0438b)
+
 ## Scoring Pipeline
 
 ![scoring-pipeline](https://github.com/user-attachments/assets/01c92796-66b0-4c30-94c6-1302c631391d)
 
 ## Scoring Results examples
 
-![IMG_1378_d3_14_02_2025_test_occlusion_pred](https://github.com/user-attachments/assets/d8aa4d59-e9b3-49e8-a843-1b3f99cdf369)
+
+![IMG_1434_d3_15_02_2025_test_generalization_pred](https://github.com/user-attachments/assets/e9e0976d-9215-4c22-8213-aaa43acc3a90)
+
+![20250407-194608_dartboard_image_pred](https://github.com/user-attachments/assets/1d83cde3-683a-416a-ac99-a6ff43d3cb83)
 
 
 ## Dataset holo_v1
